@@ -76,6 +76,49 @@ body {
   background: radial-gradient(ellipse at center, transparent 52%, rgba(0, 0, 0, .62) 100%);
 }
 
+/* ---------------- aurora drift + signal motes ---------------- */
+
+.aurora {
+  position: fixed; z-index: 0; pointer-events: none;
+  border-radius: 50%;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  opacity: .17;
+}
+.aurora.a1 {
+  width: 62vmax; height: 62vmax; top: -20vmax; left: -16vmax;
+  background: radial-gradient(circle, rgba(124, 58, 237, .9), transparent 62%);
+  animation: auroradrift 26s ease-in-out infinite alternate;
+}
+.aurora.a2 {
+  width: 52vmax; height: 52vmax; bottom: -22vmax; right: -14vmax;
+  background: radial-gradient(circle, rgba(255, 43, 214, .75), transparent 62%);
+  animation: auroradrift 34s ease-in-out infinite alternate-reverse;
+}
+@keyframes auroradrift {
+  from { transform: translate(0, 0) scale(1) rotate(0deg); }
+  to   { transform: translate(9vmax, 6vmax) scale(1.18) rotate(18deg); }
+}
+
+.motes { position: fixed; inset: 0; pointer-events: none; z-index: 88; overflow: hidden; }
+.mote {
+  position: absolute;
+  left: var(--x);
+  bottom: -14px;
+  width: var(--size); height: var(--size);
+  border-radius: 50%;
+  background: var(--hue);
+  box-shadow: 0 0 6px var(--hue), 0 0 16px var(--hue);
+  opacity: 0;
+  animation: floatup var(--dur) linear var(--delay) infinite;
+}
+@keyframes floatup {
+  0%   { transform: translate(0, 0) scale(.5); opacity: 0; }
+  10%  { opacity: var(--op, .45); }
+  88%  { opacity: var(--op, .45); }
+  100% { transform: translate(var(--drift), -110vh) scale(1.15); opacity: 0; }
+}
+
 /* ---------------- header ---------------- */
 
 .site-head {
@@ -156,6 +199,12 @@ h1.glitch::after {
   opacity: .7;
 }
 
+.title-block:hover h1.glitch {
+  text-shadow: 0 0 30px rgba(255, 43, 214, .9), 0 0 90px rgba(139, 92, 246, .65);
+  filter: drop-shadow(0 6px 0 rgba(0, 255, 163, .3));
+}
+h1.glitch { transition: text-shadow .35s ease, filter .35s ease; }
+
 .subtitle {
   font-family: var(--font-tech);
   font-size: clamp(12px, 2.4vw, 19px);
@@ -197,6 +246,7 @@ h1.glitch::after {
 .ticker-inner span { margin-right: 44px; color: var(--bone); }
 .ticker-inner .t-date { color: var(--acid); }
 .ticker-inner .t-cat { color: var(--magenta); }
+.ticker-wrap:hover .ticker-inner { animation-play-state: paused; }
 
 /* ---------------- controls ---------------- */
 
@@ -246,6 +296,7 @@ h1.glitch::after {
   transition: all .2s;
 }
 .toggle:hover { color: var(--bone); border-color: var(--bone); }
+.toggle:active { transform: scale(.95); }
 .toggle.is-on {
   color: var(--void);
   background: var(--acid);
@@ -267,7 +318,8 @@ h1.glitch::after {
   padding: 7px 13px; cursor: pointer;
   transition: all .2s;
 }
-.chip:hover { border-color: var(--magenta); color: var(--magenta); transform: translateY(-1px); }
+.chip:hover { border-color: var(--magenta); color: var(--magenta); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255, 43, 214, .25); }
+.chip:active { transform: translateY(1px) scale(.95); }
 .chip.is-active {
   background: var(--magenta);
   color: var(--void);
@@ -302,17 +354,20 @@ h1.glitch::after {
   border: 1px solid rgba(139, 92, 246, .5);
   box-shadow: 0 0 0 1px rgba(5, 3, 10, .9), 0 18px 40px rgba(0, 0, 0, .55), 0 0 26px rgba(139, 92, 246, .12);
   clip-path: polygon(0 0, 12% 0, 12% 2.5%, 24% 2.5%, 24% 0, 76% 0, 76% 2.5%, 88% 2.5%, 88% 0, 100% 0, 100% 100%, 0 100%);
-  transition: transform .28s ease, box-shadow .28s ease, border-color .28s;
+  transform: rotate(var(--q, 0deg)) perspective(750px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0));
+  transform-style: preserve-3d;
+  transition: transform .3s cubic-bezier(.2, .8, .25, 1), box-shadow .35s ease, border-color .35s ease;
   animation: cardin .6s cubic-bezier(.2, .8, .25, 1) backwards;
+  will-change: transform;
 }
 
 /* the "cracked" bit: slightly tilted cards, glitchy seams */
-.card:nth-child(3n) { transform: rotate(-.55deg); }
-.card:nth-child(4n) { transform: rotate(.45deg); }
-.card:nth-child(7n) { transform: rotate(.25deg) skewX(-.4deg); }
+.card:nth-child(3n) { --q: rotate(-.55deg); }
+.card:nth-child(4n) { --q: rotate(.45deg); }
+.card:nth-child(7n) { --q: rotate(.25deg) skewX(-.4deg); }
 
 .card:hover {
-  transform: rotate(0deg) translateY(-5px) !important;
+  --ty: -5px;
   border-color: var(--acid);
   box-shadow: 0 0 0 1px rgba(0, 255, 163, .25), 0 24px 50px rgba(0, 0, 0, .6), 0 0 34px rgba(0, 255, 163, .22);
 }
@@ -325,6 +380,28 @@ h1.glitch::after {
   background: linear-gradient(120deg, transparent 20%, rgba(255, 43, 214, .35) 40%, rgba(0, 255, 163, .25) 60%, transparent 80%);
   opacity: .5;
   mix-blend-mode: screen;
+}
+
+.card::before { /* light sweep across the card on hover */
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, .07) 47%, rgba(0, 255, 163, .14) 50%, rgba(255, 255, 255, .07) 53%, transparent 58%);
+  transform: translateX(-135%);
+  transition: transform .9s ease;
+}
+.card:hover::before { transform: translateX(135%); }
+
+.card.crack { animation: crackfx .38s steps(2) both; }
+
+@keyframes crackfx {
+  0%   { transform: rotate(var(--q, 0deg)) translate(0, 0) skewX(0); filter: none; }
+  15%  { transform: rotate(var(--q, 0deg)) translate(-2px, 1px) skewX(1.6deg); filter: hue-rotate(45deg) saturate(2.2); }
+  30%  { transform: rotate(var(--q, 0deg)) translate(3px, -1px) skewX(-2deg); }
+  45%  { transform: rotate(var(--q, 0deg)) translate(-3px, 2px); filter: hue-rotate(-35deg) brightness(1.35); }
+  60%  { transform: rotate(var(--q, 0deg)) translate(2px, 1px) skewX(1deg); }
+  78%  { transform: rotate(var(--q, 0deg)) translate(-1px, -2px); filter: saturate(1.7); }
+  100% { transform: rotate(var(--q, 0deg)) translate(0, 0) skewX(0); filter: none; }
 }
 
 .card-head {
@@ -355,7 +432,15 @@ h1.glitch::after {
   font-size: 11px; letter-spacing: .1em; color: var(--dim);
 }
 .countdown .tminus { display: block; color: var(--blood); font-size: 9.5px; letter-spacing: .24em; }
-.countdown .clock { color: var(--acid); font-size: 13px; }
+.countdown .clock {
+  color: var(--acid); font-size: 13px;
+  display: inline-block;
+  animation: clockpulse 2.6s ease-in-out infinite;
+}
+@keyframes clockpulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 6px rgba(0, 255, 163, .35); }
+  50% { opacity: .62; text-shadow: 0 0 16px rgba(0, 255, 163, .8); }
+}
 
 .card-body { padding: 14px 18px 10px; flex: 1; display: flex; flex-direction: column; gap: 9px; }
 
@@ -400,6 +485,15 @@ h1.glitch::after {
   position: relative; overflow: hidden;
 }
 .btn:hover { background: var(--magenta); color: var(--void); box-shadow: 0 0 26px rgba(255, 43, 214, .55); }
+.btn::before { /* shimmer sweep */
+  content: '';
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .3) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform .55s ease;
+}
+.btn:hover::before { transform: translateX(130%); }
 
 .btn-acid {
   border-color: var(--acid); color: var(--acid);
@@ -435,8 +529,14 @@ h1.glitch::after {
 }
 .sources { list-style: none; }
 .sources li { margin: 5px 0; font-size: 12.5px; }
-.sources a { color: var(--violet); text-decoration: none; border-bottom: 1px dotted rgba(139, 92, 246, .5); }
-.sources a:hover { color: var(--acid); border-color: var(--acid); }
+.sources a {
+  color: var(--violet); text-decoration: none;
+  background-image: linear-gradient(var(--acid), var(--acid));
+  background-size: 0% 1px; background-repeat: no-repeat; background-position: 0 100%;
+  transition: color .3s ease, background-size .35s ease;
+  padding-bottom: 1px;
+}
+.sources a:hover { color: var(--acid); background-size: 100% 1px; }
 .small { font-size: 12px; }
 .dim { color: var(--dim); }
 .mono { font-family: var(--font-mono); color: var(--bone); }
@@ -458,7 +558,9 @@ h1.glitch::after {
   backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center;
   padding: 20px;
+  transition: opacity .3s ease, visibility .3s ease;
 }
+.modal-backdrop.closing { opacity: 0; visibility: hidden; }
 .modal {
   position: relative;
   width: min(680px, 100%);
@@ -470,7 +572,9 @@ h1.glitch::after {
   box-shadow: 0 0 60px rgba(255, 43, 214, .25), 0 30px 80px rgba(0, 0, 0, .8);
   padding: 30px 30px 26px;
   animation: modalup .3s cubic-bezier(.2, .8, .25, 1);
+  transition: transform .3s ease, opacity .3s ease;
 }
+.modal-backdrop.closing .modal { transform: translateY(24px) scale(.95); opacity: 0; }
 .modal::before { /* arch glow */
   content: '';
   position: absolute; inset: 0;
@@ -500,6 +604,15 @@ h1.glitch::after {
 
 .hidden { display: none !important; }
 .acid { color: var(--acid); }
+
+/* ---------------- scroll reveal ---------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .25, 1);
+}
+.reveal.reveal-in { opacity: 1; transform: none; }
 
 /* ---------------- keyframes ---------------- */
 
@@ -580,4 +693,18 @@ h1.glitch::after {
   .grid { grid-template-columns: 1fr; padding: 0 14px; }
   .search-row { flex-direction: column; }
   .boot { font-size: 11px; }
+}
+
+/* ---------------- reduced motion ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001s !important;
+  }
+  .motes, .aurora, .scanbar { display: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }

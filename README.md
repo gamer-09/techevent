@@ -111,6 +111,11 @@ this node is a community board, not an oracle.
   language, scanlines, noise, boot-sequence terminal.
 - **A little cracked:** RGB-split glitch title, grain flicker, tilted cards
   (`:nth-child(3n)` …), corrupted footer stamp `0xFEEDBEEF`, a scan bar that
-  sweeps the page every 9 seconds.
+  sweeps the page every 9 seconds, and random one-off glitch bursts on cards.
+- **Animated & alive:** drifting aurora glow behind the page, floating signal
+  motes, 3D card tilt that follows your cursor, light-sweep shimmers on cards
+  and buttons, staggered card entrances, scroll reveals, a pulsing countdown,
+  ticker that pauses on hover, and animated modal open/close — all with
+  `prefers-reduced-motion` support.
 
 MIT — build, fork, corrupt it further.

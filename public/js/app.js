@@ -75,7 +75,7 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function cardHTML(e) {
+function cardHTML(e, i = 0) {
   const d = fmtDate(e.date);
   const t = fmtTime(e.time);
   const tEnd = fmtTime(e.timeEnd);
@@ -101,7 +101,7 @@ function cardHTML(e) {
   const timeStr = t ? `<div class="meta">⏱ ${t}${tEnd ? ' – ' + tEnd : ''}</div>` : '';
 
   return `
-  <article class="card" data-id="${esc(e.id)}">
+  <article class="card" data-id="${esc(e.id)}" style="animation-delay:${Math.min(i * 55, 900)}ms">
     <div class="card-head">
       ${ROSE_SVG}
       ${dateBlock}
@@ -146,7 +146,7 @@ function render() {
   const dated = list.filter((e) => e.date).sort((a, b) => (a.date < b.date ? -1 : 1));
   const undated = list.filter((e) => !e.date).sort((a, b) => a.name.localeCompare(b.name));
 
-  grid.innerHTML = dated.concat(undated).map(cardHTML).join('');
+  grid.innerHTML = dated.concat(undated).map((e, i) => cardHTML(e, i)).join('');
 
   const cat = state.category ? ` <span class="r-cat">[${state.category.toUpperCase()}]</span>` : '';
   $('#readout').innerHTML = `▮ SIGNALS LOCKED: <b>${dated.length + undated.length}</b>${cat} ${state.q ? `— searching “<span class="r-cat">${esc(state.q)}</span>”` : ''}`;
@@ -228,13 +228,19 @@ function openModal(e) {
   if (e.url) { reg.href = e.url; reg.classList.remove('hidden'); } else reg.classList.add('hidden');
   $('#modal-directions').href = mapsDirections(e);
 
-  $('#modal-backdrop').classList.remove('hidden');
+  $('#modal-backdrop').classList.remove('hidden', 'closing');
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-  $('#modal-backdrop').classList.add('hidden');
-  document.body.style.overflow = '';
+  const bd = $('#modal-backdrop');
+  if (bd.classList.contains('closing')) return;
+  bd.classList.add('closing');
+  setTimeout(() => {
+    bd.classList.add('hidden');
+    bd.classList.remove('closing');
+    document.body.style.overflow = '';
+  }, 320);
 }
 
 /* ---------- boot sequence ---------- */
@@ -246,10 +252,93 @@ function boot() {
   fetch('/api/health').then((r) => r.json()).then((h) => { n.textContent = h.eventsLoaded; }).catch(() => { n.textContent = '?'; });
 }
 
+/* ---------- atmosphere fx ---------- */
+
+const PREFERS_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function spawnMotes() {
+  if (PREFERS_REDUCED) return;
+  const wrap = $('#motes');
+  const hues = ['#ff2bd6', '#00ffa3', '#8b5cf6', '#d4af37'];
+  for (let i = 0; i < 18; i++) {
+    const m = document.createElement('span');
+    m.className = 'mote';
+    m.style.cssText = [
+      `--x:${(Math.random() * 100).toFixed(2)}vw`,
+      `--size:${(2 + Math.random() * 4).toFixed(1)}px`,
+      `--dur:${(9 + Math.random() * 13).toFixed(1)}s`,
+      `--delay:${(-Math.random() * 22).toFixed(1)}s`,
+      `--drift:${(Math.random() * 90 - 45).toFixed(0)}px`,
+      `--hue:${hues[Math.floor(Math.random() * hues.length)]}`,
+      `--op:${(0.25 + Math.random() * 0.35).toFixed(2)}`,
+    ].join(';');
+    wrap.appendChild(m);
+  }
+}
+
+function initTilt() {
+  if (PREFERS_REDUCED || !window.matchMedia('(pointer: fine)').matches) return;
+  document.addEventListener('mousemove', (ev) => {
+    const card = ev.target.closest('.card');
+    for (const c of document.querySelectorAll('.card[data-tilt]')) {
+      if (c !== card) {
+        c.style.setProperty('--rx', '0deg');
+        c.style.setProperty('--ry', '0deg');
+        c.removeAttribute('data-tilt');
+      }
+    }
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    const px = (ev.clientX - r.left) / r.width - 0.5;
+    const py = (ev.clientY - r.top) / r.height - 0.5;
+    card.style.setProperty('--ry', `${(px * 8).toFixed(2)}deg`);
+    card.style.setProperty('--rx', `${(-py * 8).toFixed(2)}deg`);
+    card.setAttribute('data-tilt', '1');
+  });
+}
+
+function initCrack() {
+  if (PREFERS_REDUCED) return;
+  const schedule = () => setTimeout(() => {
+    const cards = [...document.querySelectorAll('.card:not(.crack)')];
+    if (cards.length) {
+      const c = cards[Math.floor(Math.random() * cards.length)];
+      c.classList.add('crack');
+      c.style.animationDelay = '0s'; /* beat the stagger delay */
+      setTimeout(() => {
+        c.classList.remove('crack');
+        c.style.animationDelay = '';
+      }, 420);
+    }
+    schedule();
+  }, 5000 + Math.random() * 5000);
+  schedule();
+}
+
+function initReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('reveal-in'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const en of entries) {
+      if (en.isIntersecting) {
+        en.target.classList.add('reveal-in');
+        io.unobserve(en.target);
+      }
+    }
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+}
+
 /* ---------- init ---------- */
 
 async function init() {
   boot();
+  spawnMotes();
+  initTilt();
+  initCrack();
+  initReveal();
 
   try {
     const [evRes, metaRes] = await Promise.all([fetch('/api/events'), fetch('/api/meta')]);
