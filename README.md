@@ -106,7 +106,8 @@ Open `data/events.json` and add an object to `events`:
   "description": "What it is.",
   "directions": "How to get there / parking / bus.",
   "registration": "required",
-  "registrationNote": "How to sign up — or that it's walk-in friendly."
+  "registrationNote": "How to sign up — or that it's walk-in friendly.",
+  "registrationCost": "free"
 }
 ```
 
@@ -116,6 +117,7 @@ Open `data/events.json` and add an object to `events`:
   - `recommended` — free but RSVP helps organizers (blue badge: "REGISTER RECOMMENDED")
   - `dropin` — just show up, no registration (green badge: "JUST SHOW UP")
   - `registrationNote` is shown on the card and in the details modal.
+- `"registrationCost"` → whether you **pay to register/attend**: `free` (green "FREE TO REGISTER" / "FREE ENTRY"), `paid` (amber "PAID REGISTRATION" / "PAY AT DOOR"), or `donation`.
 - Keep `id` unique — it's used by `/api/events/:id`.
 - Restart the server (or use `npm run dev`) to pick up changes.
 

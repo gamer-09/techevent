@@ -63,6 +63,23 @@ function costClass(cost) {
   return '';
 }
 
+/* payment tag — "do you pay to register?" */
+function payTag(e) {
+  const c = String(e.registrationCost || '').toLowerCase();
+  const req = String(e.registration || '').toLowerCase();
+  if (c === 'paid') return `<span class="tag reg-pay-paid">✚ ${req === 'dropin' ? 'PAY AT DOOR' : 'PAID REGISTRATION'}</span>`;
+  if (c === 'donation') return '<span class="tag reg-pay-donation">✚ DONATION</span>';
+  return `<span class="tag reg-pay-free">✚ ${req === 'dropin' ? 'FREE ENTRY' : 'FREE TO REGISTER'}</span>`;
+}
+
+function payWording(e) {
+  const c = String(e.registrationCost || '').toLowerCase();
+  const req = String(e.registration || '').toLowerCase();
+  if (c === 'paid') return req === 'dropin' ? 'pay at the door (no registration)' : 'paid registration (ticket/seat)';
+  if (c === 'donation') return 'donation-based';
+  return req === 'dropin' ? 'free entry — no registration' : 'free to register';
+}
+
 /* registration badge — "must register" vs "just show up" */
 function regBadge(e) {
   const r = String(e.registration || '').toLowerCase();
@@ -121,7 +138,7 @@ function cardHTML(e, i) {
       ${t ? `<div class="meta mono">${t}${tEnd ? ' – ' + tEnd : ''}</div>` : ''}
       <p class="desc">${esc(e.description || '')}</p>
       ${regNote}
-      <div class="tag-row">${regBadge(e)}${recTag}${costTag}</div>
+      <div class="tag-row">${regBadge(e)}${payTag(e)}${recTag}${costTag}</div>
     </div>
     <div class="card-actions">
       <button class="btn" data-act="details" type="button">DETAILS</button>
@@ -322,7 +339,7 @@ function openModal(e) {
     <div class="row"><b>LOCATION</b><span>${esc(e.venue)} — ${esc(e.address)}</span></div>
     <div class="row"><b>ORGANIZER</b><span>${esc(e.organizer || '—')}</span></div>
     <div class="row"><b>COST</b><span>${esc(e.cost || 'see listing')}</span></div>
-    <div class="row"><b>REGISTRATION</b><span>${regLabel(e)}${e.registrationNote ? ` — ${esc(e.registrationNote)}` : ''}${e.url ? ` <a class="modal-link" href="${esc(e.url)}" target="_blank" rel="noopener">(register/source)</a>` : ''}</span></div>
+    <div class="row"><b>REGISTRATION</b><span>${regLabel(e)} — ${payWording(e)}${e.registrationNote ? ` ${esc(e.registrationNote)}` : ''}${e.url ? ` <a class="modal-link" href="${esc(e.url)}" target="_blank" rel="noopener">(register/source)</a>` : ''}</span></div>
     <div class="row"><b>WHAT IT IS</b><span>${esc(e.description || '—')}</span></div>
     <div class="row"><b>GETTING THERE</b><span>${esc(e.directions || 'Open the map for directions.')}</span></div>
     <div class="row"><b>SOURCE</b><span class="mono" style="word-break:break-all">${esc(e.url || '—')}</span></div>`;
