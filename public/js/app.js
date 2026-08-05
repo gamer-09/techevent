@@ -114,12 +114,14 @@ function cardHTML(e, i) {
 
 /* ---------------- filtering + render ---------------- */
 
-function filtered() {
+function filtered(opts = {}) {
   let list = state.events.slice();
 
-  if (state.upcomingOnly) list = list.filter((e) => isUpcoming(e));
-  if (!state.includeTba) list = list.filter((e) => e.date !== null);
-  if (state.category) list = list.filter((e) => e.category === state.category);
+  if (!opts.all) {
+    if (state.upcomingOnly) list = list.filter((e) => !e.date || isUpcoming(e));
+    if (!state.includeTba) list = list.filter((e) => e.date !== null);
+  }
+  if (!opts.skipCategory && state.category) list = list.filter((e) => e.category === state.category);
   if (state.month) list = list.filter((e) => e.date && e.date.startsWith(state.month));
   if (state.q) {
     const q = state.q.toLowerCase();
@@ -127,6 +129,24 @@ function filtered() {
       [e.name, e.venue, e.address, e.organizer, ...(e.tags || [])].join(' ').toLowerCase().includes(q));
   }
   return list;
+}
+
+/* how many events each chip would show, given the CURRENT toggle/search state */
+function chipCounts() {
+  const counts = {};
+  for (const e of filtered({ skipCategory: true })) {
+    counts[e.category] = (counts[e.category] || 0) + 1;
+  }
+  return counts;
+}
+
+function updateChipCounts() {
+  const counts = chipCounts();
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  document.querySelectorAll('#chips .chip').forEach((chip) => {
+    const span = chip.querySelector('.chip-cnt');
+    if (span) span.textContent = chip.dataset.cat ? (counts[chip.dataset.cat] || 0) : total;
+  });
 }
 
 function render() {
@@ -138,14 +158,31 @@ function render() {
 
     $('#grid').innerHTML = all.map((e, i) => cardHTML(e, i)).join('');
     $('#empty').classList.toggle('hidden', all.length > 0);
+
     if (all.length === 0) {
-      $('#empty-detail').textContent =
-        `zero events match${state.q ? ` “${state.q}”` : ''}${state.category ? ` in ${state.category}` : ''}. try widening the filters.`;
+      // is the only thing hiding results the TBA toggle?
+      const wouldHave = filtered({ all: true });
+      const tbaHidden = !state.includeTba && wouldHave.some((e) => e.date === null);
+      $('#show-tba').classList.toggle('hidden', !tbaHidden);
+
+      const bits = [];
+      if (state.q) bits.push(`search “${state.q}”`);
+      if (state.category) bits.push(`category ${state.category}`);
+      if (state.month) bits.push(`month ${state.month}`);
+      const scope = bits.length ? bits.join(' + ') : 'current filters';
+
+      $('#empty-detail').textContent = tbaHidden
+        ? `${scope} matches only recurring/TBA events. flip +TBA to see them.`
+        : `zero events match ${scope}. try widening the filters.`;
+    } else {
+      $('#show-tba').classList.add('hidden');
     }
 
     const cat = state.category ? ` · <span class="mono">${esc(state.category.toUpperCase())}</span>` : '';
     const q = state.q ? ` · search “${esc(state.q)}”` : '';
     $('#readout').innerHTML = `SIGNALS <b>${all.length}</b> / ${state.events.length} TRACKED${cat}${q}`;
+
+    updateChipCounts();
   } catch (err) {
     $('#grid').innerHTML = `<p style="color:var(--danger)">render error: ${esc(err.message)}</p>`;
     console.error('TECHEVENT render error:', err);
@@ -156,10 +193,11 @@ function render() {
 
 function buildFilters(meta) {
   const chips = $('#chips');
-  chips.innerHTML = '<button class="chip is-active" data-cat="" type="button">ALL</button>' +
+  chips.innerHTML = '<button class="chip is-active" data-cat="" type="button">ALL <span class="chip-cnt">0</span></button>' +
     meta.categories
-      .map((c) => `<button class="chip" data-cat="${esc(c)}" type="button">${esc(c)} <span class="mono">${meta.categoryCounts[c]}</span></button>`)
+      .map((c) => `<button class="chip" data-cat="${esc(c)}" type="button">${esc(c)} <span class="chip-cnt">0</span></button>`)
       .join('');
+  updateChipCounts();
 
   chips.addEventListener('click', (ev) => {
     const btn = ev.target.closest('.chip');
@@ -203,6 +241,12 @@ function buildFilters(meta) {
     $('#toggle-upcoming').classList.add('is-on');
     $('#toggle-tba').classList.remove('is-on');
     chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-active', c.dataset.cat === ''));
+    render();
+  });
+
+  $('#show-tba').addEventListener('click', () => {
+    state.includeTba = true;
+    $('#toggle-tba').classList.add('is-on');
     render();
   });
 }

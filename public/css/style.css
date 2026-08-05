@@ -357,6 +357,18 @@ body {
   border-color: transparent;
   font-weight: 700;
 }
+.chip .chip-cnt {
+  display: inline-block;
+  min-width: 16px;
+  margin-left: 5px;
+  padding: 0 4px;
+  font-size: 10px;
+  text-align: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0.85;
+}
+.chip.is-active .chip-cnt { background: rgba(4, 18, 26, 0.28); }
 
 .readout {
   margin-top: 14px;
@@ -562,7 +574,11 @@ body {
   -webkit-text-fill-color: transparent;
 }
 .empty-detail { margin-top: 8px; color: var(--dim); font-size: 14px; }
-.empty .btn { flex: none; margin-top: 24px; padding: 12px 26px; }
+.empty-actions {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+  margin-top: 26px;
+}
+.empty .btn { flex: none; padding: 12px 24px; }
 
 /* ---------------- footer ---------------- */
 
