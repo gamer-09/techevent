@@ -4,9 +4,9 @@ A **zero-dependency Node.js server** that tracks tech events happening in
 **Fredericton, New Brunswick, Canada** — with dates, locations, and
 click-to-navigate directions.
 
-Design: **futuristic + gothic… and a little cracked.** Void-black cathedral
-palette, blackletter glitch title, neon magenta/acid-green signal cards,
-CRT scanlines, and cards that are ever so slightly tilted. By design. 🕸
+Design: **clean futuristic.** Deep-space palette, electric cyan/blue accents,
+soft glass panels, geometric hex/ring motifs, a live WebGL particle field, and
+smooth motion throughout — no gothic, no glitch, no cracks. 🛰
 
 ---
 
@@ -130,17 +130,17 @@ this node is a community board, not an oracle.
 
 ## 🎨 Design notes
 
-- **Gothic:** UnifrakturMaguntia blackletter title, rose-window glyphs, arched
-  card seams, cathedral purple/void palette.
-- **Futuristic:** Orbitron display type, neon magenta + acid green signal
-  language, scanlines, noise, boot-sequence terminal.
-- **A little cracked:** RGB-split glitch title, grain flicker, tilted cards
-  (`:nth-child(3n)` …), corrupted footer stamp `0xFEEDBEEF`, a scan bar that
-  sweeps the page every 9 seconds, and random one-off glitch bursts on cards.
-- **Animated & alive:** drifting aurora glow behind the page, floating signal
-  motes, 3D card tilt that follows your cursor, light-sweep shimmers on cards
-  and buttons, staggered card entrances, scroll reveals, a pulsing countdown,
-  ticker that pauses on hover, and animated modal open/close — all with
-  `prefers-reduced-motion` support.
+- **Futuristic:** deep-space blue-black, electric cyan→blue gradient accents,
+  Space Grotesk + JetBrains Mono, glass panels, geometric hex/ring motifs.
+- **WebGL particle field:** 260 drifting point-sprite embers (cyan/blue/indigo)
+  with additive blending and subtle mouse parallax — with a 2D-canvas fallback
+  when WebGL is unavailable (`public/js/particles.js`).
+- **Scroll parallax:** hero layers and decorative shapes shift horizontally +
+  vertically at different rates as you scroll (rAF-throttled).
+- **Animated "signal lost" state:** when filters match zero events, a radar
+  sweep animation + pulsing core shows with a one-click RESET FILTERS.
+- **Motion:** staggered card entrances, hover lift + sheen sweep, gradient
+  title flow, ticker marquee (pauses on hover), animated modal, pulsing status
+  dot — all with `prefers-reduced-motion` support.
 
 MIT — build, fork, corrupt it further.

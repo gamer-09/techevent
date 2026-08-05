@@ -3,115 +3,138 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TECHEVENT // Fredericton Node</title>
-<meta name="description" content="Tech events in Fredericton, New Brunswick — dates, locations and directions. Futuristic gothic, slightly cracked." />
+<title>TECHEVENT // Fredericton Signal Board</title>
+<meta name="description" content="Every tech event in Fredericton, New Brunswick — dates, venues, directions. One clean futuristic signal board." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/style.css" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%230b0614' stroke='%23ff2bd6' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2300ffa3'/%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpolygon points='16,2 28,9 28,23 16,30 4,23 4,9' fill='none' stroke='%2322d3ee' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%2322d3ee'/%3E%3C/svg%3E" />
 </head>
 <body>
-  <!-- atmosphere layers -->
-  <div class="noise" aria-hidden="true"></div>
-  <div class="scanlines" aria-hidden="true"></div>
-  <div class="scanbar" aria-hidden="true"></div>
-  <div class="vignette" aria-hidden="true"></div>
 
-  <header class="site-head">
-    <div class="boot" id="boot" aria-label="boot sequence">
-      <div class="boot-line"><span class="boot-caret">&gt;</span> INITIALIZING TECHEVENT.NODE v1.0 …</div>
-      <div class="boot-line"><span class="boot-caret">&gt;</span> SCANNING FREDERICTON SECTOR 45.9636°N 66.6431°W …</div>
-      <div class="boot-line"><span class="boot-caret">&gt;</span> HANDSHAKE WITH EVENT SOURCES: <span class="ok">OK</span> <span class="ok">OK</span> <span class="ok">OK</span></div>
-      <div class="boot-line" id="boot-count"><span class="boot-caret">&gt;</span> EVENTS DETECTED: <span class="acid" id="boot-n">…</span></div>
-      <div class="boot-line"><span class="boot-caret">&gt;</span> <span class="acid">SIGNAL LOCKED. BEHOLD.</span></div>
-      <div class="boot-line"><span class="boot-caret">&gt;</span> <span class="warn">WARNING: a little cracked by design — do not be alarmed.</span></div>
-    </div>
+  <!-- particle field + background layers -->
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-glow g1" aria-hidden="true"></div>
+  <div class="bg-glow g2" aria-hidden="true"></div>
 
-    <div class="title-block">
-      <h1 class="glitch" data-text="TECHEVENT">TECHEVENT</h1>
-      <p class="subtitle">FREDERICTON <span class="sep">::</span> NEW BRUNSWICK <span class="sep">::</span> CANADA</p>
-      <p class="subtitle-2">tech signal tracker — dates · locations · directions</p>
-    </div>
-
-    <div class="ticker-wrap" aria-hidden="true">
-      <span class="ticker-label">SIGNAL</span>
-      <div class="ticker" id="ticker"></div>
-    </div>
+  <!-- top bar -->
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="TECHEVENT home">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <polygon points="16,2 28,9 28,23 16,30 4,23 4,9" fill="none" stroke="#22d3ee" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="5" fill="#22d3ee"/>
+      </svg>
+      <span class="brand-name">TECHEVENT</span>
+      <span class="brand-sub">FREDERICTON</span>
+    </a>
+    <nav class="topnav">
+      <a href="/api/events" class="nav-link mono">API</a>
+      <a href="/api/events.ics" class="nav-link mono">ICS</a>
+      <a href="/api/events.rss" class="nav-link mono">RSS</a>
+      <span class="status-pill" id="status" role="status"><span class="dot"></span><span class="status-text">CONNECTING…</span></span>
+    </nav>
   </header>
 
+  <!-- hero -->
+  <section class="hero">
+    <div class="hero-inner" data-plx-y="0.10" data-plx-x="0.03">
+      <p class="eyebrow mono">FREDERICTON · NEW BRUNSWICK · CANADA</p>
+      <h1 class="hero-title">TECHEVENT</h1>
+      <p class="hero-tag">Every tech event in the city — dates, venues and directions, in one live signal board.</p>
+      <div class="stats" id="stats" aria-label="statistics"></div>
+    </div>
+
+    <div class="hero-deco">
+      <div class="ring r1" data-plx-y="0.22" data-plx-x="-0.06" aria-hidden="true"></div>
+      <div class="ring r2" data-plx-y="0.34" data-plx-x="0.05" aria-hidden="true"></div>
+      <div class="hex h1" data-plx-y="0.16" data-plx-x="-0.09" aria-hidden="true"></div>
+      <div class="hex h2" data-plx-y="0.28" data-plx-x="0.08" aria-hidden="true"></div>
+    </div>
+
+    <div class="scroll-hint mono" aria-hidden="true">SCROLL <span class="sh-line"></span></div>
+  </section>
+
+  <!-- ticker -->
+  <div class="ticker-wrap reveal" aria-hidden="true">
+    <span class="ticker-label mono">NEXT</span>
+    <div class="ticker"><div class="ticker-inner" id="ticker"></div></div>
+  </div>
+
   <main>
-    <section class="controls reveal" aria-label="filters">
-      <div class="search-row">
+    <!-- filters -->
+    <section class="filters reveal" id="filters" aria-label="filters">
+      <div class="filter-row">
         <label class="search-box">
-          <span class="search-glyph">⌕</span>
-          <input type="search" id="search" placeholder="search the void… (ai, hackathon, free…)" autocomplete="off" />
+          <svg class="search-ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="13.6" y1="13.6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input type="search" id="search" placeholder="search events, venues, tags…" autocomplete="off" />
         </label>
         <select id="month-filter" aria-label="filter by month">
           <option value="">ALL MONTHS</option>
         </select>
         <div class="toggles">
-          <button class="toggle is-on" id="toggle-upcoming" type="button" title="hide past events">UPCOMING ONLY</button>
-          <button class="toggle" id="toggle-tba" type="button" title="show recurring / TBA listings">INCLUDE TBA</button>
+          <button class="toggle is-on" id="toggle-upcoming" type="button">UPCOMING</button>
+          <button class="toggle" id="toggle-tba" type="button">+ TBA</button>
         </div>
       </div>
-      <div class="chip-row" id="chips" role="group" aria-label="category filter">
-        <button class="chip is-active" data-cat="" type="button">ALL</button>
-      </div>
-      <p class="readout" id="readout">…</p>
+      <div class="chip-row" id="chips" role="group" aria-label="category filter"></div>
+      <p class="readout mono" id="readout" aria-live="polite">…</p>
     </section>
 
+    <!-- event grid -->
     <section class="grid" id="grid" aria-live="polite"></section>
 
-    <section class="empty hidden" id="empty">
-      <p class="empty-glyph">∅</p>
-      <p>NO SIGNALS IN THIS FREQUENCY.</p>
-      <p class="dim">try another filter — or add events to <span class="mono">data/events.json</span> and restart the node.</p>
+    <!-- animated empty / signal-lost state -->
+    <section class="empty hidden" id="empty" aria-live="polite">
+      <div class="radar" aria-hidden="true"><span class="radar-core"></span></div>
+      <h3 class="empty-title">NO SIGNALS IN THIS FREQUENCY</h3>
+      <p class="empty-detail" id="empty-detail">zero events match the current filters.</p>
+      <button class="btn btn-primary" id="reset-filters" type="button">RESET FILTERS</button>
     </section>
   </main>
 
-  <footer class="site-foot">
+  <!-- footer -->
+  <footer class="site-foot reveal">
     <div class="foot-grid">
       <div>
-        <p class="foot-title">SOURCES <span class="acid">▮</span> CROSS-REFERENCED</p>
+        <p class="foot-title mono">SOURCES</p>
         <ul class="sources" id="sources"></ul>
       </div>
       <div>
-        <p class="foot-title">SUBSCRIBE TO THE SIGNAL</p>
+        <p class="foot-title mono">SUBSCRIBE TO THE SIGNAL</p>
         <ul class="sources">
-          <li><a href="/api/events.ics" title="iCalendar feed — add to Google/Apple/Outlook">📅 iCal feed (.ics) — add to your calendar app</a></li>
-          <li><a href="/api/events.rss" title="RSS 2.0 feed">📡 RSS feed (.rss) — feed readers</a></li>
+          <li><a href="/api/events.ics" title="iCalendar feed — Google / Apple / Outlook">+ iCal feed (.ics) — add to your calendar</a></li>
+          <li><a href="/api/events.rss" title="RSS 2.0 feed">+ RSS feed (.rss) — feed readers</a></li>
+          <li><a href="/api/events" title="Raw JSON">+ JSON API</a></li>
         </ul>
       </div>
       <div>
-        <p class="foot-title">THE SMALL PRINT</p>
-        <p class="dim small">
-          Dates were pulled from organizer listings on <span class="mono">2026-08-05</span>.
-          Confirm with the organizer before travelling — events move, vanish and resurrect.
-          Directions open in Google Maps. This node is a community board, not an oracle.
+        <p class="foot-title mono">THE SMALL PRINT</p>
+        <p class="small dim">
+          Dates curated from organizer listings on <span class="mono">2026-08-05</span>. Confirm with the organizer before travelling — events move.
+          Directions open in Google Maps. Built with zero dependencies: <span class="mono">node server.js</span> → port 3000.
         </p>
-        <p class="dim small">built with zero dependencies · node only · <span class="mono">node server.js</span> → port 3000</p>
       </div>
     </div>
-    <div class="foot-stamp">
-      <span class="mono">TECHEVENT.SIGNAL_NODE // 0xFEEDBEEF // est. corrupted — a little cracked by design</span>
-    </div>
+    <div class="foot-stamp mono">TECHEVENT SIGNAL BOARD · FREDERICTON, NB · NODE 0xFEEDBEEF</div>
   </footer>
 
-  <!-- directions / details modal -->
+  <!-- details modal -->
   <div class="modal-backdrop hidden" id="modal-backdrop">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <button class="modal-close" id="modal-close" type="button" aria-label="close">✕</button>
-      <p class="modal-kicker">TRANSMISSION RECORD</p>
+      <p class="modal-kicker mono">EVENT DETAILS</p>
       <h2 id="modal-title">…</h2>
       <div class="modal-body" id="modal-body"></div>
       <div class="modal-actions">
         <a class="btn btn-ghost" id="modal-register" href="#" target="_blank" rel="noopener">REGISTER / SOURCE ↗</a>
-        <a class="btn btn-acid" id="modal-directions" href="#" target="_blank" rel="noopener">⟶ GET DIRECTIONS</a>
+        <a class="btn btn-primary" id="modal-directions" href="#" target="_blank" rel="noopener">⟶ GET DIRECTIONS</a>
       </div>
     </div>
   </div>
 
+  <script src="/js/particles.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>

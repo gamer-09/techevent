@@ -1,7 +1,8 @@
-/* TECHEVENT frontend — fetches /api/events, renders the grid of doom */
+/* TECHEVENT frontend — clean futuristic signal board */
 
 const state = {
   events: [],
+  meta: null,
   category: '',
   month: '',
   q: '',
@@ -10,25 +11,25 @@ const state = {
 };
 
 const $ = (sel) => document.querySelector(sel);
-
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-/* ---------- helpers ---------- */
+const PREFERS_REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function mapsDirections(event) {
-  const dest = encodeURIComponent(`${event.venue}, ${event.address}`);
-  return `https://www.google.com/maps/dir/?api=1&destination=${dest}`;
+/* ---------------- helpers ---------------- */
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function mapsPlace(event) {
-  const q = encodeURIComponent(`${event.venue}, ${event.address}`);
-  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+function mapsDirections(e) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${e.venue}, ${e.address}`)}`;
 }
 
-function fmtDate(dateStr) {
-  if (!dateStr) return null;
-  const d = new Date(dateStr + 'T12:00:00');
-  return { day: String(d.getDate()).padStart(2, '0'), month: MONTHS[d.getMonth()], iso: dateStr };
+function fmtDate(s) {
+  if (!s) return null;
+  const [y, m, d] = s.split('-').map(Number);
+  return { day: String(d).padStart(2, '0'), month: MONTHS[m - 1], year: y, iso: s };
 }
 
 function fmtTime(t) {
@@ -41,71 +42,58 @@ function fmtTime(t) {
 
 function countdownTo(dateStr) {
   const target = new Date(dateStr + 'T00:00:00').getTime();
-  const now = Date.now();
-  const diff = target - now;
-  if (diff <= 0) return 'NOW / PAST';
+  const diff = target - Date.now();
+  if (diff <= 0) return null; // ended
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
   if (days > 60) return `${days}D`;
-  return `${days}D ${String(hours).padStart(2, '0')}H ${String(mins).padStart(2, '0')}M`;
+  return `${days}D ${String(hours).padStart(2, '0')}H`;
 }
 
-/* ---------- rose window svg ---------- */
-
-const ROSE_SVG = `
-<svg class="rose" viewBox="0 0 48 48" aria-hidden="true">
-  <circle class="spoke" cx="24" cy="24" r="22"/>
-  <circle class="spoke" cx="24" cy="24" r="14"/>
-  <circle class="petal" cx="24" cy="3.5" r="3.2"/>
-  <circle class="petal" cx="24" cy="44.5" r="3.2"/>
-  <circle class="petal" cx="3.5" cy="24" r="3.2"/>
-  <circle class="petal" cx="44.5" cy="24" r="3.2"/>
-  <circle class="petal" cx="9.5" cy="9.5" r="3.2"/>
-  <circle class="petal" cx="38.5" cy="9.5" r="3.2"/>
-  <circle class="petal" cx="9.5" cy="38.5" r="3.2"/>
-  <circle class="petal" cx="38.5" cy="38.5" r="3.2"/>
-  <circle class="center" cx="24" cy="24" r="6"/>
-  <circle class="core" cx="24" cy="24" r="1.8"/>
-</svg>`;
-
-/* ---------- rendering ---------- */
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function isUpcoming(e) {
+  return e.date && e.date >= new Date().toISOString().slice(0, 10);
 }
 
-function cardHTML(e, i = 0) {
+/* ---------------- card rendering ---------------- */
+
+function costClass(cost) {
+  const c = String(cost || '').toLowerCase();
+  if (c.includes('free')) return 'cost-free';
+  if (c.includes('paid') || c.includes('$') || c.includes('usd') || c.includes('cad')) return 'cost-paid';
+  return '';
+}
+
+function cardHTML(e, i) {
   const d = fmtDate(e.date);
   const t = fmtTime(e.time);
   const tEnd = fmtTime(e.timeEnd);
-  const recurring = e.date === null || e.tags?.includes('recurring');
-  const tags = (e.tags || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-  const costTag = `<span class="tag cost">${esc(e.cost || 'see listing')}</span>`;
+  const recurring = e.date === null;
+  const upcoming = isUpcoming(e);
+  const multi = e.dateEnd && e.dateEnd !== e.date;
 
   const dateBlock = d
     ? `<div class="date-block">
-         <div class="d-day">${d.day}</div>
-         <div class="d-mon">${d.month}</div>
-         <div class="d-sub">${e.dateEnd && e.dateEnd !== e.date ? 'MULTI-DAY' : ''}</div>
+         <div class="d-day">${esc(d.day)}${multi ? '–' + esc(fmtDate(e.dateEnd).day) : ''}</div>
+         <div class="d-mon">${esc(d.month)} ${esc(d.year)}</div>
+         <div class="d-sub">${multi ? 'MULTI-DAY' : d.day === '01' ? '' : ''}</div>
        </div>`
-    : `<div class="date-block">
-         <div class="d-tba">TBA</div>
-         <div class="d-sub">NEXT DATE PENDING</div>
-       </div>`;
+    : `<div class="date-block"><div class="d-tba">TBA</div><div class="d-sub">NEXT DATE</div></div>`;
 
-  const countdown = d
-    ? `<div class="countdown"><span class="tminus">T-MINUS</span><span class="clock" data-cd="${e.date}">${countdownTo(e.date)}</span></div>`
-    : `<div class="countdown"><span class="tminus">STATUS</span><span class="clock" style="color:var(--gold)">RECURRING</span></div>`;
+  const clock = recurring
+    ? '<div class="countdown"><span class="tminus">STATUS</span><span class="clock recurring">RECURRING</span></div>'
+    : upcoming
+      ? `<div class="countdown"><span class="tminus">T-MINUS</span><span class="clock" data-cd="${esc(e.date)}">${countdownTo(e.date)}</span></div>`
+      : '<div class="countdown"><span class="tminus">STATUS</span><span class="clock ended">ENDED</span></div>';
 
-  const timeStr = t ? `<div class="meta">⏱ ${t}${tEnd ? ' – ' + tEnd : ''}</div>` : '';
+  const tags = (e.tags || []).map((tg) => `<span class="tag">${esc(tg)}</span>`).join('');
+  const costTag = `<span class="tag ${costClass(e.cost)}">${esc(e.cost || 'SEE LISTING')}</span>`;
+  const recTag = recurring ? '<span class="tag rec">RECURRING</span>' : '';
 
   return `
-  <article class="card" data-id="${esc(e.id)}" style="animation-delay:${Math.min(i * 55, 900)}ms">
+  <article class="card" data-id="${esc(e.id)}" style="animation-delay:${Math.min(i * 50, 500)}ms">
     <div class="card-head">
-      ${ROSE_SVG}
       ${dateBlock}
-      ${countdown}
+      ${clock}
     </div>
     <div class="card-body">
       <h3 class="card-title">${esc(e.name)}</h3>
@@ -113,53 +101,65 @@ function cardHTML(e, i = 0) {
         <span class="venue">${esc(e.venue)}</span>
         <span class="addr">${esc(e.address)}</span>
       </div>
-      ${timeStr}
+      ${t ? `<div class="meta mono">${t}${tEnd ? ' – ' + tEnd : ''}</div>` : ''}
       <p class="desc">${esc(e.description || '')}</p>
-      <div class="tag-row">${tags}${costTag}</div>
+      <div class="tag-row">${recTag}${tags}${costTag}</div>
     </div>
     <div class="card-actions">
-      <button class="btn" data-act="details">DETAILS</button>
-      <a class="btn btn-acid" href="${mapsDirections(e)}" target="_blank" rel="noopener">⟶ DIRECTIONS</a>
+      <button class="btn" data-act="details" type="button">DETAILS</button>
+      <a class="btn btn-primary" href="${mapsDirections(e)}" target="_blank" rel="noopener">⟶ DIRECTIONS</a>
     </div>
   </article>`;
 }
 
-function render() {
-  const grid = $('#grid');
-  const empty = $('#empty');
+/* ---------------- filtering + render ---------------- */
+
+function filtered() {
   let list = state.events.slice();
 
-  if (state.upcomingOnly) {
-    const today = new Date().toISOString().slice(0, 10);
-    list = list.filter((e) => e.date && e.date >= today);
-  }
-  if (!state.includeTba) {
-    list = list.filter((e) => e.date !== null);
-  }
+  if (state.upcomingOnly) list = list.filter((e) => isUpcoming(e));
+  if (!state.includeTba) list = list.filter((e) => e.date !== null);
   if (state.category) list = list.filter((e) => e.category === state.category);
   if (state.month) list = list.filter((e) => e.date && e.date.startsWith(state.month));
   if (state.q) {
     const q = state.q.toLowerCase();
-    list = list.filter((e) => [e.name, e.venue, e.address, e.organizer, ...(e.tags || [])].join(' ').toLowerCase().includes(q));
+    list = list.filter((e) =>
+      [e.name, e.venue, e.address, e.organizer, ...(e.tags || [])].join(' ').toLowerCase().includes(q));
   }
-
-  const dated = list.filter((e) => e.date).sort((a, b) => (a.date < b.date ? -1 : 1));
-  const undated = list.filter((e) => !e.date).sort((a, b) => a.name.localeCompare(b.name));
-
-  grid.innerHTML = dated.concat(undated).map((e, i) => cardHTML(e, i)).join('');
-
-  const cat = state.category ? ` <span class="r-cat">[${state.category.toUpperCase()}]</span>` : '';
-  $('#readout').innerHTML = `▮ SIGNALS LOCKED: <b>${dated.length + undated.length}</b>${cat} ${state.q ? `— searching “<span class="r-cat">${esc(state.q)}</span>”` : ''}`;
-
-  empty.classList.toggle('hidden', dated.length + undated.length > 0);
+  return list;
 }
 
-/* ---------- filters ---------- */
+function render() {
+  try {
+    const list = filtered();
+    const dated = list.filter((e) => e.date).sort((a, b) => (a.date < b.date ? -1 : 1));
+    const undated = list.filter((e) => !e.date).sort((a, b) => a.name.localeCompare(b.name));
+    const all = dated.concat(undated);
+
+    $('#grid').innerHTML = all.map((e, i) => cardHTML(e, i)).join('');
+    $('#empty').classList.toggle('hidden', all.length > 0);
+    if (all.length === 0) {
+      $('#empty-detail').textContent =
+        `zero events match${state.q ? ` “${state.q}”` : ''}${state.category ? ` in ${state.category}` : ''}. try widening the filters.`;
+    }
+
+    const cat = state.category ? ` · <span class="mono">${esc(state.category.toUpperCase())}</span>` : '';
+    const q = state.q ? ` · search “${esc(state.q)}”` : '';
+    $('#readout').innerHTML = `SIGNALS <b>${all.length}</b> / ${state.events.length} TRACKED${cat}${q}`;
+  } catch (err) {
+    $('#grid').innerHTML = `<p style="color:var(--danger)">render error: ${esc(err.message)}</p>`;
+    console.error('TECHEVENT render error:', err);
+  }
+}
+
+/* ---------------- filters UI ---------------- */
 
 function buildFilters(meta) {
   const chips = $('#chips');
   chips.innerHTML = '<button class="chip is-active" data-cat="" type="button">ALL</button>' +
-    meta.categories.map((c) => `<button class="chip" data-cat="${esc(c)}" type="button">${esc(c)}</button>`).join('');
+    meta.categories
+      .map((c) => `<button class="chip" data-cat="${esc(c)}" type="button">${esc(c)} <span class="mono">${meta.categoryCounts[c]}</span></button>`)
+      .join('');
 
   chips.addEventListener('click', (ev) => {
     const btn = ev.target.closest('.chip');
@@ -179,50 +179,90 @@ function buildFilters(meta) {
 
   $('#toggle-upcoming').addEventListener('click', (ev) => {
     state.upcomingOnly = !state.upcomingOnly;
-    ev.target.classList.toggle('is-on', state.upcomingOnly);
+    ev.currentTarget.classList.toggle('is-on', state.upcomingOnly);
     render();
   });
 
   $('#toggle-tba').addEventListener('click', (ev) => {
     state.includeTba = !state.includeTba;
-    ev.target.classList.toggle('is-on', state.includeTba);
+    ev.currentTarget.classList.toggle('is-on', state.includeTba);
+    render();
+  });
+
+  let debounce;
+  $('#search').addEventListener('input', (ev) => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => { state.q = ev.target.value.trim(); render(); }, 160);
+  });
+
+  $('#reset-filters').addEventListener('click', () => {
+    state.category = ''; state.month = ''; state.q = '';
+    state.upcomingOnly = true; state.includeTba = false;
+    $('#search').value = '';
+    $('#month-filter').value = '';
+    $('#toggle-upcoming').classList.add('is-on');
+    $('#toggle-tba').classList.remove('is-on');
+    chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-active', c.dataset.cat === ''));
     render();
   });
 }
 
-/* ---------- ticker ---------- */
+/* ---------------- ticker ---------------- */
 
 function renderTicker() {
-  const upcoming = state.events
-    .filter((e) => e.date && e.date >= new Date().toISOString().slice(0, 10))
-    .sort((a, b) => (a.date < b.date ? -1 : 1));
-  const inner = upcoming.slice(0, 12).map((e) => {
+  const next = state.events
+    .filter((e) => e.date)
+    .sort((a, b) => (a.date < b.date ? -1 : 1))
+    .slice(0, 14);
+  const inner = next.map((e) => {
     const d = fmtDate(e.date);
-    return `<span>${d ? `<span class="t-date">${d.month} ${d.day}</span>` : 'TBA'} <b>${esc(e.name)}</b> <span class="t-cat">// ${esc(e.category)}</span></span>`;
+    return `<span><span class="t-date">${d.month} ${d.day}</span> <b>${esc(e.name)}</b> <span class="t-cat mono">${esc(e.category)}</span></span>`;
   }).join('');
-  $('#ticker').innerHTML = `<div class="ticker-inner">${inner}${inner}</div>`;
+  $('#ticker').innerHTML = inner + inner; // seamless loop
 }
 
-/* ---------- modal ---------- */
+/* ---------------- stats + status ---------------- */
+
+function renderStats(meta) {
+  const upcoming = state.events.filter((e) => isUpcoming(e)).length;
+  $('#stats').innerHTML = `
+    <span class="stat">EVENTS <b>${meta.eventCount}</b></span>
+    <span class="stat">UPCOMING <b>${upcoming}</b></span>
+    <span class="stat">CATEGORIES <b>${meta.categories.length}</b></span>
+    <span class="stat">UPDATED <b>${(meta.lastUpdated || '').slice(0, 10)}</b></span>`;
+}
+
+function setStatus(text, mode) {
+  const pill = $('#status');
+  pill.classList.remove('online', 'offline');
+  if (mode) pill.classList.add(mode);
+  pill.querySelector('.status-text').textContent = text;
+}
+
+function renderSources() {
+  const sources = state.meta && state.meta.sources ? state.meta.sources : [];
+  $('#sources').innerHTML = sources
+    .map((s) => `<li><a href="${esc(s)}" target="_blank" rel="noopener">+ ${esc(s.replace(/^https?:\/\/(www\.)?/, ''))}</a></li>`)
+    .join('') || '<li class="dim">no sources recorded</li>';
+}
+
+/* ---------------- modal ---------------- */
 
 function openModal(e) {
-  $('#modal-title').textContent = e.name;
   const d = fmtDate(e.date);
   const t = fmtTime(e.time);
   const tEnd = fmtTime(e.timeEnd);
+  const multi = e.dateEnd && e.dateEnd !== e.date;
 
-  const dateRow = d
-    ? `<b>DATE</b><span>${d.month} ${d.day}, ${d.iso.slice(0, 4)}${e.dateEnd && e.dateEnd !== e.date ? ' – ' + fmtDate(e.dateEnd).month + ' ' + fmtDate(e.dateEnd).day : ''}${t ? ' · ' + t + (tEnd ? ' – ' + tEnd : '') : ''}</span>`
-    : `<b>DATE</b><span>Recurring — next date TBA, check the organizer's site</span>`;
-
+  $('#modal-title').textContent = e.name;
   $('#modal-body').innerHTML = `
-    <div class="row">${dateRow}</div>
+    <div class="row"><b>DATE</b><span>${d ? `${d.month} ${d.day}, ${d.year}${multi ? ' – ' + fmtDate(e.dateEnd).month + ' ' + fmtDate(e.dateEnd).day : ''}${t ? ' · ' + t + (tEnd ? ' – ' + tEnd : '') : ''}` : 'Recurring — next date TBA, check the organizer site'}</span></div>
     <div class="row"><b>LOCATION</b><span>${esc(e.venue)} — ${esc(e.address)}</span></div>
     <div class="row"><b>ORGANIZER</b><span>${esc(e.organizer || '—')}</span></div>
     <div class="row"><b>COST</b><span>${esc(e.cost || 'see listing')}</span></div>
     <div class="row"><b>WHAT IT IS</b><span>${esc(e.description || '—')}</span></div>
     <div class="row"><b>GETTING THERE</b><span>${esc(e.directions || 'Open the map for directions.')}</span></div>
-    <div class="row"><b>SOURCE</b><span class="mono">${esc(e.url || '—')}</span></div>`;
+    <div class="row"><b>SOURCE</b><span class="mono" style="word-break:break-all">${esc(e.url || '—')}</span></div>`;
 
   const reg = $('#modal-register');
   if (e.url) { reg.href = e.url; reg.classList.remove('hidden'); } else reg.classList.add('hidden');
@@ -240,84 +280,37 @@ function closeModal() {
     bd.classList.add('hidden');
     bd.classList.remove('closing');
     document.body.style.overflow = '';
-  }, 320);
+  }, 300);
 }
 
-/* ---------- boot sequence ---------- */
+/* ---------------- scroll parallax ---------------- */
 
-function boot() {
-  const lines = document.querySelectorAll('.boot-line');
-  lines.forEach((line, i) => line.style.animationDelay = `${i * 0.22}s`);
-  const n = $('#boot-n');
-  fetch('/api/health').then((r) => r.json()).then((h) => { n.textContent = h.eventsLoaded; }).catch(() => { n.textContent = '?'; });
-}
-
-/* ---------- atmosphere fx ---------- */
-
-const PREFERS_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-function spawnMotes() {
+function initParallax() {
   if (PREFERS_REDUCED) return;
-  const wrap = $('#motes');
-  const hues = ['#ff2bd6', '#00ffa3', '#8b5cf6', '#d4af37'];
-  for (let i = 0; i < 18; i++) {
-    const m = document.createElement('span');
-    m.className = 'mote';
-    m.style.cssText = [
-      `--x:${(Math.random() * 100).toFixed(2)}vw`,
-      `--size:${(2 + Math.random() * 4).toFixed(1)}px`,
-      `--dur:${(9 + Math.random() * 13).toFixed(1)}s`,
-      `--delay:${(-Math.random() * 22).toFixed(1)}s`,
-      `--drift:${(Math.random() * 90 - 45).toFixed(0)}px`,
-      `--hue:${hues[Math.floor(Math.random() * hues.length)]}`,
-      `--op:${(0.25 + Math.random() * 0.35).toFixed(2)}`,
-    ].join(';');
-    wrap.appendChild(m);
-  }
-}
-
-function initTilt() {
-  if (PREFERS_REDUCED || !window.matchMedia('(pointer: fine)').matches) return;
-  document.addEventListener('mousemove', (ev) => {
-    const card = ev.target.closest('.card');
-    for (const c of document.querySelectorAll('.card[data-tilt]')) {
-      if (c !== card) {
-        c.style.setProperty('--rx', '0deg');
-        c.style.setProperty('--ry', '0deg');
-        c.removeAttribute('data-tilt');
+  const els = Array.from(document.querySelectorAll('[data-plx-x], [data-plx-y]'));
+  if (!els.length) return;
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const sc = window.scrollY;
+      for (const el of els) {
+        const x = parseFloat(el.dataset.plxX || 0);
+        const y = parseFloat(el.dataset.plxY || 0);
+        el.style.transform = `translate3d(${(-sc * x).toFixed(1)}px, ${(-sc * y).toFixed(1)}px, 0)`;
       }
-    }
-    if (!card) return;
-    const r = card.getBoundingClientRect();
-    const px = (ev.clientX - r.left) / r.width - 0.5;
-    const py = (ev.clientY - r.top) / r.height - 0.5;
-    card.style.setProperty('--ry', `${(px * 8).toFixed(2)}deg`);
-    card.style.setProperty('--rx', `${(-py * 8).toFixed(2)}deg`);
-    card.setAttribute('data-tilt', '1');
-  });
+      ticking = false;
+    });
+  }, { passive: true });
 }
 
-function initCrack() {
-  if (PREFERS_REDUCED) return;
-  const schedule = () => setTimeout(() => {
-    const cards = [...document.querySelectorAll('.card:not(.crack)')];
-    if (cards.length) {
-      const c = cards[Math.floor(Math.random() * cards.length)];
-      c.classList.add('crack');
-      c.style.animationDelay = '0s'; /* beat the stagger delay */
-      setTimeout(() => {
-        c.classList.remove('crack');
-        c.style.animationDelay = '';
-      }, 420);
-    }
-    schedule();
-  }, 5000 + Math.random() * 5000);
-  schedule();
-}
+/* ---------------- scroll reveal ---------------- */
 
 function initReveal() {
-  if (!('IntersectionObserver' in window)) {
-    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('reveal-in'));
+  const els = document.querySelectorAll('.reveal');
+  if (PREFERS_REDUCED || !('IntersectionObserver' in window)) {
+    els.forEach((el) => el.classList.add('reveal-in'));
     return;
   }
   const io = new IntersectionObserver((entries) => {
@@ -327,39 +320,46 @@ function initReveal() {
         io.unobserve(en.target);
       }
     }
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+  }, { threshold: 0.1 });
+  els.forEach((el) => io.observe(el));
 }
 
-/* ---------- init ---------- */
+/* ---------------- countdown refresh ---------------- */
+
+setInterval(() => {
+  document.querySelectorAll('.clock[data-cd]').forEach((el) => {
+    const c = countdownTo(el.dataset.cd);
+    el.textContent = c === null ? 'ENDED' : c;
+    if (c === null) el.classList.add('ended');
+  });
+}, 60000);
+
+/* ---------------- init ---------------- */
 
 async function init() {
-  boot();
-  spawnMotes();
-  initTilt();
-  initCrack();
-  initReveal();
-
   try {
     const [evRes, metaRes] = await Promise.all([fetch('/api/events'), fetch('/api/meta')]);
+    if (!evRes.ok || !metaRes.ok) throw new Error(`API status ${evRes.status}/${metaRes.status}`);
     const evData = await evRes.json();
     const meta = await metaRes.json();
-    state.events = evData.events;
+
+    state.events = evData.events || [];
+    state.meta = meta;
+
     buildFilters(meta);
+    renderStats(meta);
+    renderSources();
     renderTicker();
     render();
+
+    setStatus(`ONLINE · ${meta.eventCount} EVENTS`, 'online');
   } catch (err) {
-    $('#grid').innerHTML = `<p class="dim">SIGNAL LOST — could not reach /api/events. is the server running?</p>`;
+    console.error('TECHEVENT init error:', err);
+    setStatus('OFFLINE', 'offline');
+    $('#grid').innerHTML = `<p style="color:var(--danger);max-width:560px;margin:40px auto;text-align:center">SIGNAL LOST — could not reach the API.<br>Is the server running? (<span class="mono">node server.js</span>)<br><span style="color:var(--muted)">${esc(err.message)}</span></p>`;
   }
 
-  // search input (debounced)
-  let t;
-  $('#search').addEventListener('input', (ev) => {
-    clearTimeout(t);
-    t = setTimeout(() => { state.q = ev.target.value.trim(); render(); }, 160);
-  });
-
-  // delegation: details buttons
+  // grid delegation
   $('#grid').addEventListener('click', (ev) => {
     const btn = ev.target.closest('[data-act="details"]');
     if (!btn) return;
@@ -371,13 +371,13 @@ async function init() {
   $('#modal-close').addEventListener('click', closeModal);
   $('#modal-backdrop').addEventListener('click', (ev) => { if (ev.target.id === 'modal-backdrop') closeModal(); });
   document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeModal(); });
-
-  // live countdowns
-  setInterval(() => {
-    document.querySelectorAll('.clock[data-cd]').forEach((el) => {
-      el.textContent = countdownTo(el.dataset.cd);
-    });
-  }, 30000);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+initParallax();
+initReveal();
