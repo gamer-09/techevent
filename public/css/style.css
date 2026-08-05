@@ -521,7 +521,7 @@ h1.glitch { transition: text-shadow .35s ease, filter .35s ease; }
 }
 .foot-grid {
   max-width: 1240px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1.4fr; gap: 30px;
+  display: grid; grid-template-columns: 1fr 1.2fr .9fr; gap: 30px;
 }
 .foot-title {
   font-family: var(--font-tech); font-size: 12px; letter-spacing: .3em;
@@ -687,6 +687,10 @@ h1.glitch { transition: text-shadow .35s ease, filter .35s ease; }
 .card:hover .card-title { animation: jitter .3s linear infinite; }
 
 /* ---------------- responsive ---------------- */
+
+@media (max-width: 900px) {
+  .foot-grid { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 760px) {
   .foot-grid { grid-template-columns: 1fr; }

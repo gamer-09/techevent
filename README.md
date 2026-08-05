@@ -14,21 +14,39 @@ CRT scanlines, and cards that are ever so slightly tilted. By design. 🕸
 
 Requires **Node.js 14+**. No `npm install` needed — this is the whole point.
 
+**First time:**
+
 ```bash
+# 1. get the code
+git clone https://github.com/gamer-09/techevent.git
+cd techevent
+
+# 2. start the server
 node server.js
-# or
-npm start
 ```
 
-Then open **http://localhost:3000**
+You'll see:
 
-Want auto-reload while editing `data/events.json`?
+```
+TECHEVENT signal node online: http://0.0.0.0:3000
+Events loaded: 18
+```
+
+**3. Open http://localhost:3000** in your browser — the site is served right
+from the server (frontend + JSON API, one process).
+
+Other ways to run:
 
 ```bash
-npm run dev        # node --watch server.js
+npm start            # same as: node server.js
+npm run dev          # auto-restarts when you edit data/events.json (node --watch)
+PORT=8080 node server.js   # different port
 ```
 
-Different port: `PORT=8080 node server.js`
+Troubleshooting:
+- **Port already in use?** `EADDRINUSE` → pick another: `PORT=8080 node server.js`
+- **Node too old?** `npx node@20 server.js` (or install Node 14+ from nodejs.org)
+- To stop the server: `Ctrl+C` in the terminal that's running it.
 
 ---
 
@@ -58,6 +76,13 @@ techevent/
 | `GET /api/events?q=hackathon` | search name / tags / venue |
 | `GET /api/events/:id` | single event |
 | `GET /api/meta` | categories, months, counts, sources |
+| `GET /api/events.ics` | **iCalendar feed** — subscribe in Google Calendar, Apple Calendar, Outlook (URL: `http://localhost:3000/api/events.ics`) |
+| `GET /api/events.rss` | **RSS 2.0 feed** for feed readers (`http://localhost:3000/api/events.rss`) |
+
+Both feeds are generated live from `data/events.json` — every event with a
+date gets a calendar entry (timed events carry `TZID=America/Moncton`;
+all-day events use `VALUE=DATE`). Recurring/TBA events are included in RSS but
+skipped in iCal (no fixed date to pin).
 
 ## ✍️ Adding an event
 
