@@ -3,8 +3,11 @@
     "city": "Fredericton",
     "region": "New Brunswick",
     "country": "Canada",
-    "coords": [45.9636, -66.6431],
-    "lastUpdated": "2026-08-05",
+    "coords": [
+      45.9636,
+      -66.6431
+    ],
+    "lastUpdated": "2026-08-06",
     "note": "Dates curated from organizer listings. ALWAYS confirm on the organizer's page before travelling."
   },
   "events": [
@@ -16,14 +19,21 @@
       "dateEnd": "2026-08-25",
       "timeEnd": "11:00",
       "category": "cybersecurity",
-      "tags": ["cybersecurity", "business", "free", "breakfast"],
+      "tags": [
+        "cybersecurity",
+        "business",
+        "free",
+        "breakfast"
+      ],
       "cost": "FREE",
       "venue": "Interactive Computer Systems (ICS)",
       "address": "320 Queen Street, Fredericton, NB E3B 1C1",
       "organizer": "Interactive Computer Systems / Acronis",
       "url": "https://allevents.in/fredericton/acronis-x-ics-business-it-security-free-breakfast-and-learn/100001994244609310",
       "description": "Free breakfast seminar on business IT security — backup, ransomware defense and cyber hygiene for small-to-medium businesses, hosted by local MSP Interactive Computer Systems with Acronis.",
-      "directions": "Downtown Fredericton, Queen Street. On-street metered parking nearby and the Kings Place parkade (17 King St) is a 3-min walk. Follow the Trans-Canada Hwy/Route 8 to the Queen St exit; the building is between York and Regent streets on the north side."
+      "directions": "Downtown Fredericton, Queen Street. On-street metered parking nearby and the Kings Place parkade (17 King St) is a 3-min walk. Follow the Trans-Canada Hwy/Route 8 to the Queen St exit; the building is between York and Regent streets on the north side.",
+      "registration": "required",
+      "registrationNote": "Sign up through the event listing — free, but seats are limited."
     },
     {
       "id": "itil5-certification-training",
@@ -33,14 +43,21 @@
       "dateEnd": "2026-08-28",
       "timeEnd": "17:00",
       "category": "training",
-      "tags": ["itil", "certification", "it-ops", "training"],
+      "tags": [
+        "itil",
+        "certification",
+        "it-ops",
+        "training"
+      ],
       "cost": "Paid (≈ USD 1,500)",
       "venue": "Regus Business Center Fredericton",
       "address": "320 Queen Street, Fredericton, NB E3B 1C1",
       "organizer": "Regus / training provider",
       "url": "https://allevents.in/fredericton/new-version-itil-5-foundation-certification-training-in-fredericton-nb/100001995177821573",
       "description": "Two-day instructor-led ITIL 5 Foundation certification course for IT service management professionals. Exam voucher typically included.",
-      "directions": "Same building as the ICS event — 320 Queen St, downtown. Metered street parking plus Kings Place parkade (17 King St) across the block. City buses 10/11/20/21 stop on Queen St."
+      "directions": "Same building as the ICS event — 320 Queen St, downtown. Metered street parking plus Kings Place parkade (17 King St) across the block. City buses 10/11/20/21 stop on Queen St.",
+      "registration": "required",
+      "registrationNote": "Purchase a seat with the training provider (≈ USD 1,500); exam voucher typically included."
     },
     {
       "id": "planet-hatch-office-hours",
@@ -50,14 +67,22 @@
       "dateEnd": "2026-10-01",
       "timeEnd": "14:00",
       "category": "startup",
-      "tags": ["startup", "mentorship", "networking", "free", "recurring"],
+      "tags": [
+        "startup",
+        "mentorship",
+        "networking",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Planet Hatch — Salesforce Building",
       "address": "50 Crowther Lane, Suite 140, Fredericton, NB E3C 0J1",
       "organizer": "Ignite / Planet Hatch",
       "url": "https://events.startupatlantic.ca/",
       "description": "Recurring monthly drop-in office hours with startup mentors at Knowledge Park's innovation hub. Bring your idea, prototype or pitch deck.",
-      "directions": "Knowledge Park on Fredericton's north side: from the Westmorland Street Bridge follow Ring Road / Two Nations Crossing; exit at Crowther Lane. Free visitor parking in front of the Salesforce Building. Bus route 30 stops nearby."
+      "directions": "Knowledge Park on Fredericton's north side: from the Westmorland Street Bridge follow Ring Road / Two Nations Crossing; exit at Crowther Lane. Free visitor parking in front of the Salesforce Building. Bus route 30 stops nearby.",
+      "registration": "dropin",
+      "registrationNote": "No registration — just drop in during office hours. Free."
     },
     {
       "id": "emp-conference",
@@ -67,14 +92,22 @@
       "dateEnd": "2026-10-27",
       "timeEnd": "17:00",
       "category": "industry",
-      "tags": ["mining", "petroleum", "energy", "industry-tech", "conference"],
+      "tags": [
+        "mining",
+        "petroleum",
+        "energy",
+        "industry-tech",
+        "conference"
+      ],
       "cost": "Paid (conference registration)",
       "venue": "Delta Hotels by Marriott Fredericton",
       "address": "225 Woodstock Road, Fredericton, NB E3B 2H8",
       "organizer": "New Brunswick Dept. of Natural Resources (industry partners)",
       "url": "https://10times.com/emp-fredericton",
       "description": "Atlantic Canada's exploration, mining and petroleum conference — geoscience, drilling tech, AI in resource exploration, and industry networking.",
-      "directions": "On Woodstock Road (Route 2/8 corridor) just west of downtown. Free hotel parking; 10 min walk to the Beaverbrook area. From downtown: follow Queen St west, cross the Gibson Bridge."
+      "directions": "On Woodstock Road (Route 2/8 corridor) just west of downtown. Free hotel parking; 10 min walk to the Beaverbrook area. From downtown: follow Queen St west, cross the Gibson Bridge.",
+      "registration": "required",
+      "registrationNote": "Conference registration via the organizer; passes sell out ahead of the event."
     },
     {
       "id": "business-basics-ignite",
@@ -84,14 +117,21 @@
       "dateEnd": "2026-11-05",
       "timeEnd": "15:00",
       "category": "startup",
-      "tags": ["startup", "entrepreneurship", "free", "recurring"],
+      "tags": [
+        "startup",
+        "entrepreneurship",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Ignite / Planet Hatch — Salesforce Building",
       "address": "50 Crowther Lane, Suite 140, Fredericton, NB E3C 0J1",
       "organizer": "Ignite (Fredericton)",
       "url": "https://myignite.ca/events",
       "description": "Bi-weekly info session covering the foundational steps of starting a business — structure, funding, registration — led by Ignite's startup advisors.",
-      "directions": "Same Knowledge Park location as Planet Hatch Office Hours (see that listing). Free visitor parking; 15 min drive from downtown across the Westmorland St. Bridge."
+      "directions": "Same Knowledge Park location as Planet Hatch Office Hours (see that listing). Free visitor parking; 15 min drive from downtown across the Westmorland St. Bridge.",
+      "registration": "recommended",
+      "registrationNote": "Free session — registering on the Ignite calendar helps organizers plan, but walk-ins are usually welcome."
     },
     {
       "id": "adef-canada-2026",
@@ -101,14 +141,21 @@
       "dateEnd": "2026-12-08",
       "timeEnd": "17:00",
       "category": "innovation",
-      "tags": ["entrepreneurship", "innovation", "global", "conference"],
+      "tags": [
+        "entrepreneurship",
+        "innovation",
+        "global",
+        "conference"
+      ],
       "cost": "≈ USD 105 (ticketed)",
       "venue": "Fredericton Convention Centre",
       "address": "670 Queen Street, Fredericton, NB E3B 1C2",
       "organizer": "Africa Diaspora Entrepreneurs Forum / local partners",
       "url": "https://allevents.in/fredericton/africa-diaspora-entrepreneurs-forum-2026-canada/100001991015988418",
       "description": "Multi-day forum connecting diaspora entrepreneurs with capital, mentors and Atlantic Canadian tech/innovation ecosystem players. Panels, pitch sessions and B2B matchmaking.",
-      "directions": "Heart of downtown, beside City Hall and the Playhouse. Paid indoor parking at the Convention Centre (entrance off St. John St); also Kings Place parkade and street meters. Convention Centre is a 2-min walk from the officers' square transit hub."
+      "directions": "Heart of downtown, beside City Hall and the Playhouse. Paid indoor parking at the Convention Centre (entrance off St. John St); also Kings Place parkade and street meters. Convention Centre is a 2-min walk from the officers' square transit hub.",
+      "registration": "required",
+      "registrationNote": "Tickets via the event page (≈ USD 105)."
     },
     {
       "id": "makerspace-recurring",
@@ -118,14 +165,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "maker",
-      "tags": ["makerspace", "workshop", "3d-printing", "electronics", "recurring"],
+      "tags": [
+        "makerspace",
+        "workshop",
+        "3d-printing",
+        "electronics",
+        "recurring"
+      ],
       "cost": "FREE (talks) / small donation (workshops)",
       "venue": "Fredericton Makerspace",
       "address": "241 Canada Street, Fredericton, NB E3A 4A1",
       "organizer": "Fredericton Makerspace",
       "url": "https://www.frederictonmakerspace.ca/",
       "description": "Community workshop for 3D printing, electronics, woodworking and more. Open nights, Maker Talks fundraisers and hands-on workshops run year-round — next date is posted on their site (often monthly).",
-      "directions": "North side of the city, on Canada Street (off the Ring Road / Two Nations Crossing area). Street parking available; bus routes 20/21/24 pass nearby. If you're new, a member can tour you around at the start of any event."
+      "directions": "North side of the city, on Canada Street (off the Ring Road / Two Nations Crossing area). Street parking available; bus routes 20/21/24 pass nearby. If you're new, a member can tour you around at the start of any event.",
+      "registration": "dropin",
+      "registrationNote": "Open nights and Maker Talks are free walk-ins; some hands-on workshops ask for a small donation and a spot can be booked on their site."
     },
     {
       "id": "cic-public-seminars",
@@ -135,14 +190,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "cybersecurity",
-      "tags": ["cybersecurity", "research", "university", "seminars", "recurring"],
+      "tags": [
+        "cybersecurity",
+        "research",
+        "university",
+        "seminars",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "UNB Fredericton Campus — Canadian Institute for Cybersecurity",
       "address": "550 Windsor Street, Fredericton, NB E3B 5A3",
       "organizer": "UNB Canadian Institute for Cybersecurity (CIC)",
       "url": "https://www.unb.ca/cic/",
       "description": "Recurring public seminars on cyber operations, threat research and AI security, often featuring visiting researchers and industry speakers. Dates posted term-by-term on the CIC site.",
-      "directions": "On UNB's Fredericton campus, near the Aikenhead Centre. Free visitor parking in the Windsor St lots after 5 PM; campus is a 10-min walk from downtown across the Saint John River."
+      "directions": "On UNB's Fredericton campus, near the Aikenhead Centre. Free visitor parking in the Windsor St lots after 5 PM; campus is a 10-min walk from downtown across the Saint John River.",
+      "registration": "dropin",
+      "registrationNote": "Open to the public and free — no registration needed; check the CIC site for the term schedule."
     },
     {
       "id": "unb-cs-colloquium",
@@ -152,14 +215,23 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "university",
-      "tags": ["university", "research", "ai", "seminars", "free", "recurring"],
+      "tags": [
+        "university",
+        "research",
+        "ai",
+        "seminars",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Gillin Hall — UNB Faculty of Computer Science",
       "address": "10 Bailey Drive, Fredericton, NB E3B 5A3",
       "organizer": "UNB Faculty of Computer Science",
       "url": "https://www.unb.ca/fredericton/cs/",
       "description": "Weekly colloquium series during the fall & winter terms (Sep–Dec, Jan–Apr): visiting researchers and faculty talk AI, machine learning, systems, HCI and more. Free and open to the public — schedule is posted at the start of each term.",
-      "directions": "Gillin Hall on the UNB campus, off Bailey Drive. Visitor parking in the lots off Bailey Dr after 5 PM; campus is a 10-min walk from downtown across the Saint John River footbridge."
+      "directions": "Gillin Hall on the UNB campus, off Bailey Drive. Visitor parking in the lots off Bailey Dr after 5 PM; campus is a 10-min walk from downtown across the Saint John River footbridge.",
+      "registration": "dropin",
+      "registrationNote": "Free and open to the public — just walk in. Schedule posts at the start of each term."
     },
     {
       "id": "unb-design-showcase",
@@ -169,14 +241,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "university",
-      "tags": ["university", "capstone", "engineering", "demo-day", "recurring"],
+      "tags": [
+        "university",
+        "capstone",
+        "engineering",
+        "demo-day",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Wu Conference Centre, UNB",
       "address": "6 Duffie Drive, Fredericton, NB E3B 0R6",
       "organizer": "UNB Faculty of Engineering & Computer Science",
       "url": "https://www.unb.ca/fredericton/engineering/",
       "description": "Annual spring showcase (typically April) where final-year engineering and computer science students demo their capstone projects — robotics, apps, hardware and research prototypes. Great place to spot future hires.",
-      "directions": "Wu Conference Centre on the UNB campus (6 Duffie Drive). Paid parking at the centre; bus routes 20/21/22 stop at the campus gates."
+      "directions": "Wu Conference Centre on the UNB campus (6 Duffie Drive). Paid parking at the centre; bus routes 20/21/22 stop at the campus gates.",
+      "registration": "dropin",
+      "registrationNote": "Free public showcase — no registration to attend."
     },
     {
       "id": "apex-startup-challenge",
@@ -186,14 +266,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "startup",
-      "tags": ["startup", "competition", "pitch", "students", "recurring"],
+      "tags": [
+        "startup",
+        "competition",
+        "pitch",
+        "students",
+        "recurring"
+      ],
       "cost": "Free to attend (registration)",
       "venue": "Wu Conference Centre, UNB + Planet Hatch",
       "address": "6 Duffie Drive + 50 Crowther Lane, Fredericton, NB",
       "organizer": "UNB International Business & Entrepreneurship Centre (IBEC)",
       "url": "https://www.unb.ca/fredericton/management/ibec/apex/",
       "description": "Atlantic Canada's biggest student startup competition — $30,000+ in prizes. Teams pitch live; the 2026 edition ran Jan 22–23 (elevator pitch night at Planet Hatch, finals & awards at the Wu Conference Centre). Next edition expected late January 2027 — watch the IBEC page.",
-      "directions": "Finals at the Wu Conference Centre (6 Duffie Dr, UNB campus); the Thursday elevator-pitch night is at Planet Hatch (50 Crowther Ln, Knowledge Park). Free parking at both after hours."
+      "directions": "Finals at the Wu Conference Centre (6 Duffie Dr, UNB campus); the Thursday elevator-pitch night is at Planet Hatch (50 Crowther Ln, Knowledge Park). Free parking at both after hours.",
+      "registration": "recommended",
+      "registrationNote": "Free to attend as audience; competing teams register through IBEC in the fall."
     },
     {
       "id": "breakthru-live-finale",
@@ -203,14 +291,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "startup",
-      "tags": ["startup", "pitch", "investment", "innovation", "recurring"],
+      "tags": [
+        "startup",
+        "pitch",
+        "investment",
+        "innovation",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Fredericton Convention Centre",
       "address": "670 Queen Street, Fredericton, NB E3B 1C2",
       "organizer": "New Brunswick Innovation Foundation (NBIF)",
       "url": "https://nbif.ca/",
       "description": "The finale of NBIF's flagship startup program — the finalist companies pitch live for a share of the multi-million-dollar Breakthru investment pool. 2026 edition was March 19 at the Convention Centre; next edition expected mid-March 2027.",
-      "directions": "Fredericton Convention Centre, 670 Queen St downtown — indoor paid parking off St. John St; 2-min walk from the transit hub at Officers' Square."
+      "directions": "Fredericton Convention Centre, 670 Queen St downtown — indoor paid parking off St. John St; 2-min walk from the transit hub at Officers' Square.",
+      "registration": "dropin",
+      "registrationNote": "Free to attend — no registration required."
     },
     {
       "id": "merge-demo-day",
@@ -220,14 +316,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "startup",
-      "tags": ["startup", "demo-day", "civic-tech", "municipal", "recurring"],
+      "tags": [
+        "startup",
+        "demo-day",
+        "civic-tech",
+        "municipal",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Planet Hatch — Salesforce Building",
       "address": "50 Crowther Lane, Suite 140, Fredericton, NB E3C 0J1",
       "organizer": "Planet Hatch / Ignite",
       "url": "https://events.startupatlantic.ca/",
       "description": "Demo day for Planet Hatch's startup–municipality program: startups show the real-world solutions they built in partnership with Capital Region municipalities. 2026 edition ran March 24 — next cohort demo typically spring 2027.",
-      "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge."
+      "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge.",
+      "registration": "dropin",
+      "registrationNote": "Free demo day — just show up."
     },
     {
       "id": "bbi-networking-night",
@@ -237,14 +341,21 @@
       "dateEnd": null,
       "timeEnd": "20:00",
       "category": "community",
-      "tags": ["networking", "startup", "free", "recurring"],
+      "tags": [
+        "networking",
+        "startup",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "Planet Hatch — Salesforce Building",
       "address": "50 Crowther Lane, Suite 140, Fredericton, NB E3C 0J1",
       "organizer": "Planet Hatch / Futurpreneurs",
       "url": "https://myignite.ca/events",
       "description": "Monthly-ish evening networking at Planet Hatch, run in partnership with Futurpreneurs — founders, funders and the curious, with food and drinks. Typically 5:30–8 PM.",
-      "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge."
+      "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge.",
+      "registration": "recommended",
+      "registrationNote": "Free networking night — RSVPing through the Ignite calendar helps the hosts, but drop-ins are welcome."
     },
     {
       "id": "library-tech-workshops",
@@ -254,14 +365,24 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "maker",
-      "tags": ["library", "coding", "robotics", "3d-printing", "kids", "free", "recurring"],
+      "tags": [
+        "library",
+        "coding",
+        "robotics",
+        "3d-printing",
+        "kids",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE (most programs)",
       "venue": "Fredericton Public Library",
       "address": "12 Carleton Street, Fredericton, NB E3B 3P4",
       "organizer": "Fredericton Public Library",
       "url": "https://www.fredericton.ca/en/arts-culture-and-recreation/library",
       "description": "Ongoing tech programming for all ages — coding clubs, robotics, 3D printing demos, maker kits and digital-skills workshops. Most programs are free; the calendar is posted seasonally.",
-      "directions": "Downtown next to City Hall, across from the Convention Centre. Free City Hall lot parking after 6 PM; 1-min walk from the Officers' Square transit hub."
+      "directions": "Downtown next to City Hall, across from the Convention Centre. Free City Hall lot parking after 6 PM; 1-min walk from the Officers' Square transit hub.",
+      "registration": "recommended",
+      "registrationNote": "Most programs are free; some workshops need a spot booked through the library calendar."
     },
     {
       "id": "science-east-maker-labs",
@@ -271,14 +392,22 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "maker",
-      "tags": ["science", "stem", "workshops", "kids", "recurring"],
+      "tags": [
+        "science",
+        "stem",
+        "workshops",
+        "kids",
+        "recurring"
+      ],
       "cost": "Varies (admission + workshop fees)",
       "venue": "Science East Science Centre",
       "address": "668 Brunswick Street, Fredericton, NB E3B 1H6",
       "organizer": "Science East",
       "url": "https://www.scienceeast.nb.ca/",
       "description": "Interactive science centre in the historic York County Jail building — hands-on STEM workshops, maker labs, robotics days and school-break tech camps.",
-      "directions": "668 Brunswick St, downtown. Street parking plus the nearby Carleton St parkade; 5-min walk from Officers' Square."
+      "directions": "668 Brunswick St, downtown. Street parking plus the nearby Carleton St parkade; 5-min walk from Officers' Square.",
+      "registration": "recommended",
+      "registrationNote": "Pay admission at the door; hands-on workshops and camps often need advance booking."
     },
     {
       "id": "witnb-networking",
@@ -288,14 +417,21 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "community",
-      "tags": ["women-in-tech", "networking", "community", "recurring"],
+      "tags": [
+        "women-in-tech",
+        "networking",
+        "community",
+        "recurring"
+      ],
       "cost": "Usually FREE (check listing)",
       "venue": "Venue varies (Planet Hatch, UNB, downtown)",
       "address": "Fredericton, NB (venue varies — see organizer listing)",
       "organizer": "Women in Tech New Brunswick (WiT NB)",
       "url": "https://witnb.ca/",
       "description": "Community network for women and allies in New Brunswick tech — fireside chats with local leaders, skill-building sessions and relaxed networking. Events rotate venues around the province; Fredericton editions happen regularly.",
-      "directions": "Venue rotates between Planet Hatch, UNB and downtown Fredericton — check the organizer's listing for each event."
+      "directions": "Venue rotates between Planet Hatch, UNB and downtown Fredericton — check the organizer's listing for each event.",
+      "registration": "recommended",
+      "registrationNote": "Usually free — registration is on each event listing."
     },
     {
       "id": "nbcc-tech-info-sessions",
@@ -305,14 +441,23 @@
       "dateEnd": null,
       "timeEnd": null,
       "category": "education",
-      "tags": ["nbcc", "college", "information-sessions", "careers", "free", "recurring"],
+      "tags": [
+        "nbcc",
+        "college",
+        "information-sessions",
+        "careers",
+        "free",
+        "recurring"
+      ],
       "cost": "FREE",
       "venue": "NBCC Fredericton Campus",
       "address": "26 Duffie Drive, Fredericton, NB E3B 0R6",
       "organizer": "New Brunswick Community College (NBCC)",
       "url": "https://nbcc.ca/",
       "description": "Free info sessions on NBCC's technology programs — IT Support & Network Security, Software Development, Cybersecurity and more — with campus tours and program instructors on hand. Offered throughout the year, heaviest in fall.",
-      "directions": "NBCC Fredericton Campus at 26 Duffie Drive, on the hill above downtown — free visitor parking; bus routes 20/21/22 stop nearby."
+      "directions": "NBCC Fredericton Campus at 26 Duffie Drive, on the hill above downtown — free visitor parking; bus routes 20/21/22 stop nearby.",
+      "registration": "recommended",
+      "registrationNote": "Free info sessions — registering ahead helps NBCC plan seating."
     }
   ]
 }

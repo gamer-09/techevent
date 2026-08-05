@@ -482,6 +482,19 @@ body {
 .tag.cost-paid { border-color: rgba(251, 191, 36, 0.4); color: var(--warn); }
 .tag.rec { border-color: rgba(129, 140, 248, 0.45); color: var(--indigo); }
 
+/* registration badges */
+.tag.reg-required { border-color: rgba(255, 92, 122, 0.55); color: #ff8ba3; background: rgba(255, 92, 122, 0.1); font-weight: 700; }
+.tag.reg-recommended { border-color: rgba(59, 130, 246, 0.55); color: #8ab8ff; background: rgba(59, 130, 246, 0.1); }
+.tag.reg-dropin { border-color: rgba(52, 211, 153, 0.55); color: var(--ok); background: rgba(52, 211, 153, 0.08); font-weight: 700; }
+
+.reg-note {
+  font-size: 12.5px;
+  color: var(--dim);
+  border-left: 2px solid var(--line-strong);
+  padding-left: 10px;
+  margin-top: 2px;
+}
+
 .card-actions {
   display: flex; gap: 10px;
   padding: 14px 18px 18px;
@@ -679,6 +692,8 @@ body {
   font-weight: 500;
 }
 .modal-body .row span { color: var(--text); }
+.modal-link { color: var(--cyan); text-decoration: none; border-bottom: 1px dashed rgba(34, 211, 238, 0.5); }
+.modal-link:hover { color: #7deeff; border-bottom-style: solid; }
 
 .modal-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
 

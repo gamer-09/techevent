@@ -63,6 +63,21 @@ function costClass(cost) {
   return '';
 }
 
+/* registration badge — "must register" vs "just show up" */
+function regBadge(e) {
+  const r = String(e.registration || '').toLowerCase();
+  if (r === 'required') return '<span class="tag reg-required">◈ REGISTRATION REQUIRED</span>';
+  if (r === 'recommended') return '<span class="tag reg-recommended">◈ REGISTER RECOMMENDED</span>';
+  return '<span class="tag reg-dropin">✓ JUST SHOW UP — NO REGISTRATION</span>';
+}
+
+function regLabel(e) {
+  const r = String(e.registration || '').toLowerCase();
+  if (r === 'required') return 'REGISTRATION REQUIRED';
+  if (r === 'recommended') return 'REGISTRATION RECOMMENDED';
+  return 'NO REGISTRATION — JUST SHOW UP';
+}
+
 function cardHTML(e, i) {
   const d = fmtDate(e.date);
   const t = fmtTime(e.time);
@@ -88,6 +103,7 @@ function cardHTML(e, i) {
   const tags = (e.tags || []).map((tg) => `<span class="tag">${esc(tg)}</span>`).join('');
   const costTag = `<span class="tag ${costClass(e.cost)}">${esc(e.cost || 'SEE LISTING')}</span>`;
   const recTag = recurring ? '<span class="tag rec">RECURRING</span>' : '';
+  const regNote = e.registrationNote ? `<p class="reg-note">${esc(e.registrationNote)}</p>` : '';
 
   return `
   <article class="card" data-id="${esc(e.id)}" style="animation-delay:${Math.min(i * 50, 500)}ms">
@@ -101,9 +117,11 @@ function cardHTML(e, i) {
         <span class="venue">${esc(e.venue)}</span>
         <span class="addr">${esc(e.address)}</span>
       </div>
+      ${e.organizer ? `<div class="meta mono">BY ${esc(e.organizer)}</div>` : ''}
       ${t ? `<div class="meta mono">${t}${tEnd ? ' – ' + tEnd : ''}</div>` : ''}
       <p class="desc">${esc(e.description || '')}</p>
-      <div class="tag-row">${recTag}${tags}${costTag}</div>
+      ${regNote}
+      <div class="tag-row">${regBadge(e)}${recTag}${costTag}</div>
     </div>
     <div class="card-actions">
       <button class="btn" data-act="details" type="button">DETAILS</button>
@@ -304,6 +322,7 @@ function openModal(e) {
     <div class="row"><b>LOCATION</b><span>${esc(e.venue)} — ${esc(e.address)}</span></div>
     <div class="row"><b>ORGANIZER</b><span>${esc(e.organizer || '—')}</span></div>
     <div class="row"><b>COST</b><span>${esc(e.cost || 'see listing')}</span></div>
+    <div class="row"><b>REGISTRATION</b><span>${regLabel(e)}${e.registrationNote ? ` — ${esc(e.registrationNote)}` : ''}${e.url ? ` <a class="modal-link" href="${esc(e.url)}" target="_blank" rel="noopener">(register/source)</a>` : ''}</span></div>
     <div class="row"><b>WHAT IT IS</b><span>${esc(e.description || '—')}</span></div>
     <div class="row"><b>GETTING THERE</b><span>${esc(e.directions || 'Open the map for directions.')}</span></div>
     <div class="row"><b>SOURCE</b><span class="mono" style="word-break:break-all">${esc(e.url || '—')}</span></div>`;

@@ -104,11 +104,18 @@ Open `data/events.json` and add an object to `events`:
   "organizer": "Who runs it",
   "url": "https://registration.link",
   "description": "What it is.",
-  "directions": "How to get there / parking / bus."
+  "directions": "How to get there / parking / bus.",
+  "registration": "required",
+  "registrationNote": "How to sign up — or that it's walk-in friendly."
 }
 ```
 
 - `"date": null` → renders as **TBA / recurring** (great for recurring meetups).
+- `"registration"` → one of `required` / `recommended` / `dropin`:
+  - `required` — must register/ticket before attending (red badge: "REGISTRATION REQUIRED")
+  - `recommended` — free but RSVP helps organizers (blue badge: "REGISTER RECOMMENDED")
+  - `dropin` — just show up, no registration (green badge: "JUST SHOW UP")
+  - `registrationNote` is shown on the card and in the details modal.
 - Keep `id` unique — it's used by `/api/events/:id`.
 - Restart the server (or use `npm run dev`) to pick up changes.
 
