@@ -1,0 +1,21 @@
+{
+  "name": "techevent",
+  "version": "1.0.0",
+  "description": "TECHEVENT — tech event signal tracker for Fredericton, New Brunswick, Canada (futuristic gothic, slightly cracked)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "keywords": [
+    "fredericton",
+    "tech-events",
+    "new-brunswick",
+    "events",
+    "server"
+  ],
+  "license": "MIT"
+}

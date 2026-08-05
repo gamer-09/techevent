@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TECHEVENT // Fredericton Node</title>
+<meta name="description" content="Tech events in Fredericton, New Brunswick — dates, locations and directions. Futuristic gothic, slightly cracked." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/style.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%230b0614' stroke='%23ff2bd6' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%2300ffa3'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <!-- atmosphere layers -->
+  <div class="noise" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="scanbar" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <header class="site-head">
+    <div class="boot" id="boot" aria-label="boot sequence">
+      <div class="boot-line"><span class="boot-caret">&gt;</span> INITIALIZING TECHEVENT.NODE v1.0 …</div>
+      <div class="boot-line"><span class="boot-caret">&gt;</span> SCANNING FREDERICTON SECTOR 45.9636°N 66.6431°W …</div>
+      <div class="boot-line"><span class="boot-caret">&gt;</span> HANDSHAKE WITH EVENT SOURCES: <span class="ok">OK</span> <span class="ok">OK</span> <span class="ok">OK</span></div>
+      <div class="boot-line" id="boot-count"><span class="boot-caret">&gt;</span> EVENTS DETECTED: <span class="acid" id="boot-n">…</span></div>
+      <div class="boot-line"><span class="boot-caret">&gt;</span> <span class="acid">SIGNAL LOCKED. BEHOLD.</span></div>
+      <div class="boot-line"><span class="boot-caret">&gt;</span> <span class="warn">WARNING: a little cracked by design — do not be alarmed.</span></div>
+    </div>
+
+    <div class="title-block">
+      <h1 class="glitch" data-text="TECHEVENT">TECHEVENT</h1>
+      <p class="subtitle">FREDERICTON <span class="sep">::</span> NEW BRUNSWICK <span class="sep">::</span> CANADA</p>
+      <p class="subtitle-2">tech signal tracker — dates · locations · directions</p>
+    </div>
+
+    <div class="ticker-wrap" aria-hidden="true">
+      <span class="ticker-label">SIGNAL</span>
+      <div class="ticker" id="ticker"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="controls" aria-label="filters">
+      <div class="search-row">
+        <label class="search-box">
+          <span class="search-glyph">⌕</span>
+          <input type="search" id="search" placeholder="search the void… (ai, hackathon, free…)" autocomplete="off" />
+        </label>
+        <select id="month-filter" aria-label="filter by month">
+          <option value="">ALL MONTHS</option>
+        </select>
+        <div class="toggles">
+          <button class="toggle is-on" id="toggle-upcoming" type="button" title="hide past events">UPCOMING ONLY</button>
+          <button class="toggle" id="toggle-tba" type="button" title="show recurring / TBA listings">INCLUDE TBA</button>
+        </div>
+      </div>
+      <div class="chip-row" id="chips" role="group" aria-label="category filter">
+        <button class="chip is-active" data-cat="" type="button">ALL</button>
+      </div>
+      <p class="readout" id="readout">…</p>
+    </section>
+
+    <section class="grid" id="grid" aria-live="polite"></section>
+
+    <section class="empty hidden" id="empty">
+      <p class="empty-glyph">∅</p>
+      <p>NO SIGNALS IN THIS FREQUENCY.</p>
+      <p class="dim">try another filter — or add events to <span class="mono">data/events.json</span> and restart the node.</p>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-title">SOURCES <span class="acid">▮</span> CROSS-REFERENCED</p>
+        <ul class="sources" id="sources"></ul>
+      </div>
+      <div>
+        <p class="foot-title">THE SMALL PRINT</p>
+        <p class="dim small">
+          Dates were pulled from organizer listings on <span class="mono">2026-08-05</span>.
+          Confirm with the organizer before travelling — events move, vanish and resurrect.
+          Directions open in Google Maps. This node is a community board, not an oracle.
+        </p>
+        <p class="dim small">built with zero dependencies · node only · <span class="mono">node server.js</span> → port 3000</p>
+      </div>
+    </div>
+    <div class="foot-stamp">
+      <span class="mono">TECHEVENT.SIGNAL_NODE // 0xFEEDBEEF // est. corrupted — a little cracked by design</span>
+    </div>
+  </footer>
+
+  <!-- directions / details modal -->
+  <div class="modal-backdrop hidden" id="modal-backdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" type="button" aria-label="close">✕</button>
+      <p class="modal-kicker">TRANSMISSION RECORD</p>
+      <h2 id="modal-title">…</h2>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-actions">
+        <a class="btn btn-ghost" id="modal-register" href="#" target="_blank" rel="noopener">REGISTER / SOURCE ↗</a>
+        <a class="btn btn-acid" id="modal-directions" href="#" target="_blank" rel="noopener">⟶ GET DIRECTIONS</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
