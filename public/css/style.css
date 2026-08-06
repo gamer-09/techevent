@@ -4,6 +4,7 @@
    ============================================================ */
 
 :root {
+  color-scheme: dark;
   --bg: #05070d;
   --bg2: #0a1020;
   --panel: rgba(13, 20, 36, 0.78);
@@ -307,16 +308,33 @@ body {
 }
 .search-box input::placeholder { color: var(--muted); }
 
-#month-filter {
-  background: var(--panel); color: var(--text);
+#month-filter,
+#course-filter {
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: dark;
+  background-color: var(--panel);
+  color: var(--text);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 11px 14px;
-  font-family: var(--mono); font-size: 13px;
+  padding: 11px 34px 11px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2322d3ee' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  max-width: 100%;
 }
-#month-filter:hover, #month-filter:focus { border-color: var(--line-strong); outline: none; }
+#month-filter:hover,
+#course-filter:hover,
+#month-filter:focus,
+#course-filter:focus {
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+  outline: none;
+}
 
 .toggles { display: flex; gap: 8px; }
 
