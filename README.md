@@ -107,7 +107,8 @@ Open `data/events.json` and add an object to `events`:
   "directions": "How to get there / parking / bus.",
   "registration": "required",
   "registrationNote": "How to sign up — or that it's walk-in friendly.",
-  "registrationCost": "free"
+  "registrationCost": "free",
+  "goodFor": ["Cybersecurity", "Software Engineering"]
 }
 ```
 
@@ -118,6 +119,7 @@ Open `data/events.json` and add an object to `events`:
   - `dropin` — just show up, no registration (green badge: "JUST SHOW UP")
   - `registrationNote` is shown on the card and in the details modal.
 - `"registrationCost"` → whether you **pay to register/attend**: `free` (green "FREE TO REGISTER" / "FREE ENTRY"), `paid` (amber "PAID REGISTRATION" / "PAY AT DOOR"), or `donation`.
+- `"goodFor"` → array of courses/programs the event is beneficial for, e.g. `["Cybersecurity"]` or `["Software Engineering", "Computer Science"]`. Shown as "GOOD FOR" pills on the card, in the details modal, and used by the **ANY COURSE** filter dropdown.
 - Keep `id` unique — it's used by `/api/events/:id`.
 - Restart the server (or use `npm run dev`) to pick up changes.
 

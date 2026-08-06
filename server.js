@@ -125,6 +125,7 @@ function buildMeta(events) {
     categoryCounts: categories,
     months: Object.keys(months).sort(),
     monthCounts: months,
+    courses: [...new Set(events.flatMap((e) => e.goodFor || []))].sort(),
     sources: [
       'https://allevents.in/fredericton/technology',
       'https://myignite.ca/events',

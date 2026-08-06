@@ -4,6 +4,7 @@ const state = {
   events: [],
   meta: null,
   category: '',
+  course: '',
   month: '',
   q: '',
   upcomingOnly: true,
@@ -137,6 +138,7 @@ function cardHTML(e, i) {
       ${e.organizer ? `<div class="meta mono">BY ${esc(e.organizer)}</div>` : ''}
       ${t ? `<div class="meta mono">${t}${tEnd ? ' – ' + tEnd : ''}</div>` : ''}
       <p class="desc">${esc(e.description || '')}</p>
+      ${e.goodFor && e.goodFor.length ? `<div class="good-for"><span class="gf-label mono">GOOD FOR</span>${e.goodFor.map((g) => `<span class="gf-pill">${esc(g)}</span>`).join('')}</div>` : ''}
       ${regNote}
       <div class="tag-row">${regBadge(e)}${payTag(e)}${recTag}${costTag}</div>
     </div>
@@ -157,11 +159,15 @@ function filtered(opts = {}) {
     if (!state.includeTba) list = list.filter((e) => e.date !== null);
   }
   if (!opts.skipCategory && state.category) list = list.filter((e) => e.category === state.category);
+  if (state.course) {
+    const c = state.course.toLowerCase();
+    list = list.filter((e) => (e.goodFor || []).some((g) => g.toLowerCase() === c));
+  }
   if (state.month) list = list.filter((e) => e.date && e.date.startsWith(state.month));
   if (state.q) {
     const q = state.q.toLowerCase();
     list = list.filter((e) =>
-      [e.name, e.venue, e.address, e.organizer, ...(e.tags || [])].join(' ').toLowerCase().includes(q));
+      [e.name, e.venue, e.address, e.organizer, ...(e.tags || []), ...(e.goodFor || [])].join(' ').toLowerCase().includes(q));
   }
   return list;
 }
@@ -203,6 +209,7 @@ function render() {
       const bits = [];
       if (state.q) bits.push(`search “${state.q}”`);
       if (state.category) bits.push(`category ${state.category}`);
+      if (state.course) bits.push(`course ${state.course}`);
       if (state.month) bits.push(`month ${state.month}`);
       const scope = bits.length ? bits.join(' + ') : 'current filters';
 
@@ -215,7 +222,8 @@ function render() {
 
     const cat = state.category ? ` · <span class="mono">${esc(state.category.toUpperCase())}</span>` : '';
     const q = state.q ? ` · search “${esc(state.q)}”` : '';
-    $('#readout').innerHTML = `SIGNALS <b>${all.length}</b> / ${state.events.length} TRACKED${cat}${q}`;
+    const courseTxt = state.course ? ` · course <span class="mono">${esc(state.course.toUpperCase())}</span>` : '';
+    $('#readout').innerHTML = `SIGNALS <b>${all.length}</b> / ${state.events.length} TRACKED${cat}${courseTxt}${q}`;
 
     updateChipCounts();
   } catch (err) {
@@ -250,6 +258,13 @@ function buildFilters(meta) {
     }).join('');
   sel.addEventListener('change', () => { state.month = sel.value; render(); });
 
+  // course dropdown (built from event data)
+  const courses = [...new Set(state.events.flatMap((e) => e.goodFor || []))].sort();
+  const courseSel = $('#course-filter');
+  courseSel.innerHTML = '<option value="">ANY COURSE</option>' +
+    courses.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  courseSel.addEventListener('change', () => { state.course = courseSel.value; render(); });
+
   $('#toggle-upcoming').addEventListener('click', (ev) => {
     state.upcomingOnly = !state.upcomingOnly;
     ev.currentTarget.classList.toggle('is-on', state.upcomingOnly);
@@ -269,10 +284,11 @@ function buildFilters(meta) {
   });
 
   $('#reset-filters').addEventListener('click', () => {
-    state.category = ''; state.month = ''; state.q = '';
+    state.category = ''; state.course = ''; state.month = ''; state.q = '';
     state.upcomingOnly = true; state.includeTba = false;
     $('#search').value = '';
     $('#month-filter').value = '';
+    $('#course-filter').value = '';
     $('#toggle-upcoming').classList.add('is-on');
     $('#toggle-tba').classList.remove('is-on');
     chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-active', c.dataset.cat === ''));
@@ -341,6 +357,7 @@ function openModal(e) {
     <div class="row"><b>COST</b><span>${esc(e.cost || 'see listing')}</span></div>
     <div class="row"><b>REGISTRATION</b><span>${regLabel(e)} — ${payWording(e)}${e.registrationNote ? ` ${esc(e.registrationNote)}` : ''}${e.url ? ` <a class="modal-link" href="${esc(e.url)}" target="_blank" rel="noopener">(register/source)</a>` : ''}</span></div>
     <div class="row"><b>WHAT IT IS</b><span>${esc(e.description || '—')}</span></div>
+    <div class="row"><b>GOOD FOR COURSES</b><span>${(e.goodFor && e.goodFor.length ? e.goodFor.map(esc).join(' · ') : '—')}</span></div>
     <div class="row"><b>GETTING THERE</b><span>${esc(e.directions || 'Open the map for directions.')}</span></div>
     <div class="row"><b>SOURCE</b><span class="mono" style="word-break:break-all">${esc(e.url || '—')}</span></div>`;
 

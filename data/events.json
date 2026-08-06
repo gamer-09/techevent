@@ -34,7 +34,12 @@
       "directions": "Downtown Fredericton, Queen Street. On-street metered parking nearby and the Kings Place parkade (17 King St) is a 3-min walk. Follow the Trans-Canada Hwy/Route 8 to the Queen St exit; the building is between York and Regent streets on the north side.",
       "registration": "required",
       "registrationNote": "Sign up through the event listing — free, but seats are limited.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Cybersecurity",
+        "IT & Networking",
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "itil5-certification-training",
@@ -59,7 +64,12 @@
       "directions": "Same building as the ICS event — 320 Queen St, downtown. Metered street parking plus Kings Place parkade (17 King St) across the block. City buses 10/11/20/21 stop on Queen St.",
       "registration": "required",
       "registrationNote": "Paid registration — Purchase a seat with the training provider (≈ USD 1,500); exam voucher typically included.",
-      "registrationCost": "paid"
+      "registrationCost": "paid",
+      "goodFor": [
+        "IT & Networking",
+        "Cybersecurity",
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "planet-hatch-office-hours",
@@ -85,7 +95,12 @@
       "directions": "Knowledge Park on Fredericton's north side: from the Westmorland Street Bridge follow Ring Road / Two Nations Crossing; exit at Crowther Lane. Free visitor parking in front of the Salesforce Building. Bus route 30 stops nearby.",
       "registration": "dropin",
       "registrationNote": "No registration — just drop in during office hours. Free.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Business & Entrepreneurship",
+        "Computer Science",
+        "Software Engineering"
+      ]
     },
     {
       "id": "emp-conference",
@@ -111,7 +126,12 @@
       "directions": "On Woodstock Road (Route 2/8 corridor) just west of downtown. Free hotel parking; 10 min walk to the Beaverbrook area. From downtown: follow Queen St west, cross the Gibson Bridge.",
       "registration": "required",
       "registrationNote": "Paid registration — Conference registration via the organizer; passes sell out ahead of the event.",
-      "registrationCost": "paid"
+      "registrationCost": "paid",
+      "goodFor": [
+        "Engineering",
+        "Data Science & AI",
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "business-basics-ignite",
@@ -136,7 +156,10 @@
       "directions": "Same Knowledge Park location as Planet Hatch Office Hours (see that listing). Free visitor parking; 15 min drive from downtown across the Westmorland St. Bridge.",
       "registration": "recommended",
       "registrationNote": "Free session — registering on the Ignite calendar helps organizers plan, but walk-ins are usually welcome.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "adef-canada-2026",
@@ -161,7 +184,11 @@
       "directions": "Heart of downtown, beside City Hall and the Playhouse. Paid indoor parking at the Convention Centre (entrance off St. John St); also Kings Place parkade and street meters. Convention Centre is a 2-min walk from the officers' square transit hub.",
       "registration": "required",
       "registrationNote": "Tickets via the event page (≈ USD 105).",
-      "registrationCost": "paid"
+      "registrationCost": "paid",
+      "goodFor": [
+        "Business & Entrepreneurship",
+        "Marketing & Communications"
+      ]
     },
     {
       "id": "makerspace-recurring",
@@ -187,7 +214,12 @@
       "directions": "North side of the city, on Canada Street (off the Ring Road / Two Nations Crossing area). Street parking available; bus routes 20/21/24 pass nearby. If you're new, a member can tour you around at the start of any event.",
       "registration": "dropin",
       "registrationNote": "Open nights and Maker Talks are free walk-ins; some hands-on workshops ask for a small donation and a spot can be booked on their site.",
-      "registrationCost": "donation"
+      "registrationCost": "donation",
+      "goodFor": [
+        "Engineering",
+        "Computer Science",
+        "Software Engineering"
+      ]
     },
     {
       "id": "cic-public-seminars",
@@ -213,7 +245,12 @@
       "directions": "On UNB's Fredericton campus, near the Aikenhead Centre. Free visitor parking in the Windsor St lots after 5 PM; campus is a 10-min walk from downtown across the Saint John River.",
       "registration": "dropin",
       "registrationNote": "Open to the public and free — no registration needed; check the CIC site for the term schedule.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Cybersecurity",
+        "Computer Science",
+        "Data Science & AI"
+      ]
     },
     {
       "id": "unb-cs-colloquium",
@@ -240,7 +277,13 @@
       "directions": "Gillin Hall on the UNB campus, off Bailey Drive. Visitor parking in the lots off Bailey Dr after 5 PM; campus is a 10-min walk from downtown across the Saint John River footbridge.",
       "registration": "dropin",
       "registrationNote": "Free and open to the public — just walk in. Schedule posts at the start of each term.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Computer Science",
+        "Cybersecurity",
+        "Data Science & AI",
+        "Software Engineering"
+      ]
     },
     {
       "id": "unb-design-showcase",
@@ -266,7 +309,12 @@
       "directions": "Wu Conference Centre on the UNB campus (6 Duffie Drive). Paid parking at the centre; bus routes 20/21/22 stop at the campus gates.",
       "registration": "dropin",
       "registrationNote": "Free public showcase — no registration to attend.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Engineering",
+        "Computer Science",
+        "Software Engineering"
+      ]
     },
     {
       "id": "apex-startup-challenge",
@@ -292,7 +340,11 @@
       "directions": "Finals at the Wu Conference Centre (6 Duffie Dr, UNB campus); the Thursday elevator-pitch night is at Planet Hatch (50 Crowther Ln, Knowledge Park). Free parking at both after hours.",
       "registration": "recommended",
       "registrationNote": "Free to attend as audience; competing teams register through IBEC in the fall.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Business & Entrepreneurship",
+        "Computer Science"
+      ]
     },
     {
       "id": "breakthru-live-finale",
@@ -318,7 +370,10 @@
       "directions": "Fredericton Convention Centre, 670 Queen St downtown — indoor paid parking off St. John St; 2-min walk from the transit hub at Officers' Square.",
       "registration": "dropin",
       "registrationNote": "Free to attend — no registration required.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "merge-demo-day",
@@ -344,7 +399,12 @@
       "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge.",
       "registration": "dropin",
       "registrationNote": "Free demo day — just show up.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Computer Science",
+        "Software Engineering",
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "bbi-networking-night",
@@ -369,7 +429,11 @@
       "directions": "Planet Hatch, 50 Crowther Lane (Salesforce Building), Knowledge Park — free visitor parking; 15 min from downtown via the Westmorland St. Bridge.",
       "registration": "recommended",
       "registrationNote": "Free networking night — RSVPing through the Ignite calendar helps the hosts, but drop-ins are welcome.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Business & Entrepreneurship",
+        "Computer Science"
+      ]
     },
     {
       "id": "library-tech-workshops",
@@ -397,7 +461,12 @@
       "directions": "Downtown next to City Hall, across from the Convention Centre. Free City Hall lot parking after 6 PM; 1-min walk from the Officers' Square transit hub.",
       "registration": "recommended",
       "registrationNote": "Most programs are free; some workshops need a spot booked through the library calendar.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Computer Science",
+        "Engineering",
+        "Education & Teaching"
+      ]
     },
     {
       "id": "science-east-maker-labs",
@@ -423,7 +492,12 @@
       "directions": "668 Brunswick St, downtown. Street parking plus the nearby Carleton St parkade; 5-min walk from Officers' Square.",
       "registration": "recommended",
       "registrationNote": "Pay admission at the door; hands-on workshops and camps often need advance booking.",
-      "registrationCost": "paid"
+      "registrationCost": "paid",
+      "goodFor": [
+        "Science",
+        "Engineering",
+        "Education & Teaching"
+      ]
     },
     {
       "id": "witnb-networking",
@@ -448,7 +522,13 @@
       "directions": "Venue rotates between Planet Hatch, UNB and downtown Fredericton — check the organizer's listing for each event.",
       "registration": "recommended",
       "registrationNote": "Usually free — registration is on each event listing.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "Cybersecurity",
+        "Computer Science",
+        "Software Engineering",
+        "Business & Entrepreneurship"
+      ]
     },
     {
       "id": "nbcc-tech-info-sessions",
@@ -475,7 +555,14 @@
       "directions": "NBCC Fredericton Campus at 26 Duffie Drive, on the hill above downtown — free visitor parking; bus routes 20/21/22 stop nearby.",
       "registration": "recommended",
       "registrationNote": "Free info sessions — registering ahead helps NBCC plan seating.",
-      "registrationCost": "free"
+      "registrationCost": "free",
+      "goodFor": [
+        "IT & Networking",
+        "Cybersecurity",
+        "Computer Science",
+        "Software Engineering",
+        "Business & Entrepreneurship"
+      ]
     }
   ]
 }
