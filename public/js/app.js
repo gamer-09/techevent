@@ -137,7 +137,10 @@ function cardHTML(e, i) {
       </div>
       ${e.organizer ? `<div class="meta mono">BY ${esc(e.organizer)}</div>` : ''}
       ${t ? `<div class="meta mono">${t}${tEnd ? ' – ' + tEnd : ''}</div>` : ''}
-      <p class="desc">${esc(e.description || '')}</p>
+      <div class="about">
+        <span class="about-label mono">ABOUT</span>
+        <p class="desc">${esc(e.description || '')}</p>
+      </div>
       ${e.goodFor && e.goodFor.length ? `<div class="good-for"><span class="gf-label mono">GOOD FOR</span>${e.goodFor.map((g) => `<span class="gf-pill">${esc(g)}</span>`).join('')}</div>` : ''}
       ${regNote}
       <div class="tag-row">${regBadge(e)}${payTag(e)}${recTag}${costTag}</div>
@@ -356,7 +359,7 @@ function openModal(e) {
     <div class="row"><b>ORGANIZER</b><span>${esc(e.organizer || '—')}</span></div>
     <div class="row"><b>COST</b><span>${esc(e.cost || 'see listing')}</span></div>
     <div class="row"><b>REGISTRATION</b><span>${regLabel(e)} — ${payWording(e)}${e.registrationNote ? ` ${esc(e.registrationNote)}` : ''}${e.url ? ` <a class="modal-link" href="${esc(e.url)}" target="_blank" rel="noopener">(register/source)</a>` : ''}</span></div>
-    <div class="row"><b>WHAT IT IS</b><span>${esc(e.description || '—')}</span></div>
+    <div class="row"><b>ABOUT THE EVENT</b><span>${esc(e.description || '—')}</span></div>
     <div class="row"><b>GOOD FOR COURSES</b><span>${(e.goodFor && e.goodFor.length ? e.goodFor.map(esc).join(' · ') : '—')}</span></div>
     <div class="row"><b>GETTING THERE</b><span>${esc(e.directions || 'Open the map for directions.')}</span></div>
     <div class="row"><b>SOURCE</b><span class="mono" style="word-break:break-all">${esc(e.url || '—')}</span></div>`;

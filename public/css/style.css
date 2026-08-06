@@ -484,7 +484,15 @@ body {
 .meta .venue { color: #c9d9f5; }
 .meta .addr { display: block; margin-top: 1px; }
 
-.desc { font-size: 13px; color: var(--dim); }
+.desc { font-size: 13px; color: #a7b8d6; line-height: 1.55; }
+
+.about { margin-top: 1px; }
+.about-label {
+  display: block;
+  font-size: 10px; letter-spacing: 0.26em;
+  color: var(--cyan);
+  margin-bottom: 3px;
+}
 
 .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
 .tag {
