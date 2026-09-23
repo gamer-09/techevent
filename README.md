@@ -62,8 +62,10 @@ techevent/
 │   └── live-events.json # crawler cache (auto-managed, do not edit)
 ├── public/
 │   ├── index.html       # page shell
-│   ├── css/style.css    # futuristic gothic styling (the good stuff)
-│   └── js/app.js        # rendering, filters, countdowns, modal
+│   ├── css/style.css    # futuristic styling (the good stuff)
+│   └── js/
+│       ├── app.js       # rendering, filters, countdowns, modal
+│       └── particles.js # WebGL particle field & canvas fallback
 └── README.md
 ```
 
@@ -99,9 +101,9 @@ add it manually to `data/events.json` if you want it on the board.
 | `GET /api/events?month=2026-10` | filter by month (`YYYY-MM`) |
 | `GET /api/events?q=hackathon` | search name / tags / venue |
 | `GET /api/events/:id` | single event |
-| `GET /api/meta` | categories, months, counts, sources |
-| `GET /api/events.ics` | **iCalendar feed** — subscribe in Google Calendar, Apple Calendar, Outlook (URL: `http://localhost:6001/api/events.ics`) |
-| `GET /api/events.rss` | **RSS 2.0 feed** for feed readers (`http://localhost:6001/api/events.rss`) |
+| `GET /api/meta` | categories, months, counts, city info |
+| `GET /api/events.ics` | **iCalendar feed** — subscribe in Google Calendar, Apple Calendar, Outlook |
+| `GET /api/events.rss` | **RSS 2.0 feed** for feed readers |
 
 Both feeds are generated live from `data/events.json` — every event with a
 date gets a calendar entry (timed events carry `TZID=America/Moncton`;
@@ -141,11 +143,9 @@ Open `data/events.json` and add an object to `events`:
   - `required` — must register/ticket before attending (red badge: "REGISTRATION REQUIRED")
   - `recommended` — free but RSVP helps organizers (blue badge: "REGISTER RECOMMENDED")
   - `dropin` — just show up, no registration (green badge: "JUST SHOW UP")
-  - `registrationNote` is shown on the card and in the details modal.
-- `"registrationCost"` → whether you **pay to register/attend**: `free` (green "FREE TO REGISTER" / "FREE ENTRY"), `paid` (amber "PAID REGISTRATION" / "PAY AT DOOR"), or `donation`.
-- `"goodFor"` → array of courses/programs the event is beneficial for, e.g. `["Cybersecurity"]` or `["Software Engineering", "Computer Science"]`. Shown as "GOOD FOR" pills on the card, in the details modal, and used by the **ANY COURSE** filter dropdown.
+- `"registrationCost"` → whether you **pay to register/attend**: `free` (green "FREE TO REGISTER"), `paid` (amber "PAID REGISTRATION"), or `donation`.
+- `"goodFor"` → array of courses/programs the event is beneficial for. Shown as "GOOD FOR" pills on the card.
 - Keep `id` unique — it's used by `/api/events/:id`.
-- Restart the server (or use `npm run dev`) to pick up changes.
 
 ## 🧭 Directions
 
@@ -159,24 +159,24 @@ transit, and "getting there" notes per venue.
 - myignite.ca/events · events.startupatlantic.ca (Ignite / Planet Hatch)
 - frederictonmakerspace.ca
 - unb.ca/cic (Canadian Institute for Cybersecurity)
+- unb.ca/fredericton/cs
+- unb.ca/fredericton/management/ibec/apex
+- nbif.ca
+- fredericton.ca/en/arts-culture-and-recreation/library
+- scienceeast.nb.ca
+- witnb.ca
+- nbcc.ca
 
-⚠️ Event dates move. Always confirm on the organizer's page before travelling —
-this node is a community board, not an oracle. Live-crawled listings especially
-should be double-checked against their source URL (shown on every card).
+⚠️ Event dates move. Always confirm on the organizer's page before travelling.
 
 ## 🎨 Design notes
 
 - **Futuristic:** deep-space blue-black, electric cyan→blue gradient accents,
   Space Grotesk + JetBrains Mono, glass panels, geometric hex/ring motifs.
 - **WebGL particle field:** 260 drifting point-sprite embers (cyan/blue/indigo)
-  with additive blending and subtle mouse parallax — with a 2D-canvas fallback
-  when WebGL is unavailable (`public/js/particles.js`).
-- **Scroll parallax:** hero layers and decorative shapes shift horizontally +
-  vertically at different rates as you scroll (rAF-throttled).
-- **Animated "signal lost" state:** when filters match zero events, a radar
-  sweep animation + pulsing core shows with a one-click RESET FILTERS.
-- **Motion:** staggered card entrances, hover lift + sheen sweep, gradient
-  title flow, ticker marquee (pauses on hover), animated modal, pulsing status
-  dot — all with `prefers-reduced-motion` support.
+  with additive blending and subtle mouse parallax — with a 2D-canvas fallback.
+- **Scroll parallax:** hero layers and decorative shapes shift at different rates.
+- **Animated "signal lost" state:** radar sweep animation when filters match zero events.
+- **Motion:** staggered entrances, hover lift, gradient title flow, ticker marquee.
 
 MIT — build, fork, corrupt it further.
