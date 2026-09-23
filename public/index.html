@@ -70,6 +70,11 @@
           <svg class="search-ico" viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="13.6" y1="13.6" x2="18" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           <input type="search" id="search" placeholder="search events, venues, tags…" autocomplete="off" />
         </label>
+        <div class="seg" id="time-scope" role="group" aria-label="show past or upcoming events">
+          <button class="seg-btn is-on" data-scope="upcoming" type="button">UPCOMING</button>
+          <button class="seg-btn" data-scope="past" type="button">PAST</button>
+          <button class="seg-btn" data-scope="all" type="button">ALL</button>
+        </div>
         <select id="month-filter" aria-label="filter by month">
           <option value="">ALL MONTHS</option>
         </select>
@@ -77,7 +82,6 @@
           <option value="">ANY COURSE</option>
         </select>
         <div class="toggles">
-          <button class="toggle is-on" id="toggle-upcoming" type="button">UPCOMING</button>
           <button class="toggle" id="toggle-tba" type="button">+ TBA</button>
         </div>
       </div>
@@ -119,7 +123,7 @@
         <p class="foot-title mono">THE SMALL PRINT</p>
         <p class="small dim">
           Dates curated from organizer listings on <span class="mono">2026-08-05</span>. Confirm with the organizer before travelling — events move.
-          Directions open in Google Maps. Built with zero dependencies: <span class="mono">node server.js</span> → port 3000.
+          Directions open in Google Maps. Built with zero dependencies: <span class="mono">node server.js</span> → port 6001.
         </p>
       </div>
     </div>

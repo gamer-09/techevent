@@ -7,7 +7,7 @@ const state = {
   course: '',
   month: '',
   q: '',
-  upcomingOnly: true,
+  timeScope: 'upcoming', // 'upcoming' | 'past' | 'all'
   includeTba: false,
 };
 
@@ -158,15 +158,20 @@ function filtered(opts = {}) {
   let list = state.events.slice();
 
   if (!opts.all) {
-    if (state.upcomingOnly) list = list.filter((e) => !e.date || isUpcoming(e));
-    if (!state.includeTba) list = list.filter((e) => e.date !== null);
+    // picking a specific month = "show what happened that month" — bypass
+    // the time scope + TBA toggles so past months still display their events
+    if (!state.month) {
+      if (state.timeScope === 'upcoming') list = list.filter((e) => !e.date || isUpcoming(e));
+      else if (state.timeScope === 'past') list = list.filter((e) => e.date && !isUpcoming(e));
+      if (!state.includeTba) list = list.filter((e) => e.date !== null);
+    }
   }
   if (!opts.skipCategory && state.category) list = list.filter((e) => e.category === state.category);
   if (state.course) {
     const c = state.course.toLowerCase();
     list = list.filter((e) => (e.goodFor || []).some((g) => g.toLowerCase() === c));
   }
-  if (state.month) list = list.filter((e) => e.date && e.date.startsWith(state.month));
+  if (state.month && !opts.skipMonth) list = list.filter((e) => e.date && e.date.startsWith(state.month));
   if (state.q) {
     const q = state.q.toLowerCase();
     list = list.filter((e) =>
@@ -229,10 +234,37 @@ function render() {
     $('#readout').innerHTML = `SIGNALS <b>${all.length}</b> / ${state.events.length} TRACKED${cat}${courseTxt}${q}`;
 
     updateChipCounts();
+    renderMonthOptions();
   } catch (err) {
     $('#grid').innerHTML = `<p style="color:var(--danger)">render error: ${esc(err.message)}</p>`;
     console.error('TECHEVENT render error:', err);
   }
+}
+
+/* ---------------- month dropdown ---------------- */
+
+/* Rebuild the month <option> list with live counts from the current filter
+   pool (toggles + search + category applied, month itself ignored). Empty
+   months get .opt-empty (grey). Counts are shown as " · N". */
+function renderMonthOptions() {
+  const sel = $('#month-filter');
+  if (!sel) return;
+  const counts = {};
+  let tba = 0;
+  for (const e of filtered({ skipMonth: true })) {
+    if (e.date) counts[e.date.slice(0, 7)] = (counts[e.date.slice(0, 7)] || 0) + 1;
+    else tba++;
+  }
+  const months = (state.meta && state.meta.months) || [];
+  sel.innerHTML = '<option value="">ALL MONTHS</option>' +
+    months.map((m) => {
+      const [y, mo] = m.split('-');
+      const n = counts[m] || 0;
+      const label = `${MONTHS[Number(mo) - 1]} ${y}${n ? ` · ${n}` : ''}`;
+      return `<option value="${m}"${n === 0 ? ' class="opt-empty"' : ''}>${label}</option>`;
+    }).join('')
+    + (tba ? `<option value="" disabled>TBA / RECURRING · ${tba} (use +TBA toggle)</option>` : '');
+  sel.value = state.month; // restore selection after rebuild
 }
 
 /* ---------------- filters UI ---------------- */
@@ -254,11 +286,6 @@ function buildFilters(meta) {
   });
 
   const sel = $('#month-filter');
-  sel.innerHTML = '<option value="">ALL MONTHS</option>' +
-    meta.months.map((m) => {
-      const [y, mo] = m.split('-');
-      return `<option value="${m}">${MONTHS[Number(mo) - 1]} ${y}</option>`;
-    }).join('');
   sel.addEventListener('change', () => { state.month = sel.value; render(); });
 
   // course dropdown (built from event data)
@@ -268,9 +295,12 @@ function buildFilters(meta) {
     courses.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
   courseSel.addEventListener('change', () => { state.course = courseSel.value; render(); });
 
-  $('#toggle-upcoming').addEventListener('click', (ev) => {
-    state.upcomingOnly = !state.upcomingOnly;
-    ev.currentTarget.classList.toggle('is-on', state.upcomingOnly);
+  // Past / Upcoming / All segmented control
+  $('#time-scope').addEventListener('click', (ev) => {
+    const btn = ev.target.closest('.seg-btn');
+    if (!btn) return;
+    state.timeScope = btn.dataset.scope;
+    document.querySelectorAll('#time-scope .seg-btn').forEach((b) => b.classList.toggle('is-on', b === btn));
     render();
   });
 
@@ -288,11 +318,11 @@ function buildFilters(meta) {
 
   $('#reset-filters').addEventListener('click', () => {
     state.category = ''; state.course = ''; state.month = ''; state.q = '';
-    state.upcomingOnly = true; state.includeTba = false;
+    state.timeScope = 'upcoming'; state.includeTba = false;
     $('#search').value = '';
     $('#month-filter').value = '';
     $('#course-filter').value = '';
-    $('#toggle-upcoming').classList.add('is-on');
+    document.querySelectorAll('#time-scope .seg-btn').forEach((b) => b.classList.toggle('is-on', b.dataset.scope === 'upcoming'));
     $('#toggle-tba').classList.remove('is-on');
     chips.querySelectorAll('.chip').forEach((c) => c.classList.toggle('is-active', c.dataset.cat === ''));
     render();

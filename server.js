@@ -3,7 +3,7 @@
  * -------------------------------------------------
  * Zero-dependency Node.js server.
  *
- *   node server.js          -> http://localhost:3000
+ *   node server.js          -> http://localhost:6001
  *   PORT=8080 node server.js
  *
  * Routes
@@ -25,10 +25,11 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6001;
 const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 const DATA_FILE = path.join(ROOT, 'data', 'events.json');
+const crawler = require('./lib/crawler');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -53,6 +54,16 @@ function loadEvents() {
     log('ERROR loading events:', err.message);
     return [];
   }
+}
+
+/**
+ * Manual events (data/events.json) + live-fetched events (crawler cache).
+ * Manual entries always win on dedupe — see lib/crawler.js mergeEvents().
+ */
+function allEvents() {
+  const manual = loadEvents();
+  const { added } = crawler.mergeEvents(manual, crawler.liveCache.events);
+  return manual.concat(added);
 }
 
 function todayStr() {
@@ -105,6 +116,16 @@ function buildMeta(events) {
       months[m] = (months[m] || 0) + 1;
     }
   }
+  // month filter list: ALL 12 months of the current calendar year, extended
+  // into future years whenever events exist there. Computed from the clock,
+  // so the list rolls over automatically when the year changes.
+  const currentYear = new Date().getFullYear();
+  const monthSet = new Set();
+  for (let m = 1; m <= 12; m++) monthSet.add(`${currentYear}-${String(m).padStart(2, '0')}`);
+  for (const m of Object.keys(months)) {
+    if (Number(m.slice(0, 4)) >= currentYear) monthSet.add(m);
+  }
+  const monthList = [...monthSet].sort();
   return {
     city: 'Fredericton',
     region: 'New Brunswick',
@@ -123,7 +144,7 @@ function buildMeta(events) {
     recurringCount: events.length - dated,
     categories: Object.keys(categories).sort(),
     categoryCounts: categories,
-    months: Object.keys(months).sort(),
+    months: monthList,
     monthCounts: months,
     courses: [...new Set(events.flatMap((e) => e.goodFor || []))].sort(),
     sources: [
@@ -153,7 +174,7 @@ function sendJSON(res, status, payload) {
   res.end(body);
 }
 
-function serveStatic(res, pathname) {
+function serveStatic(req, res, pathname) {
   let rel = pathname === '/' ? '/index.html' : pathname;
   const filePath = path.normalize(path.join(ROOT, 'public', rel));
 
@@ -168,10 +189,20 @@ function serveStatic(res, pathname) {
       return res.end('404: SIGNAL LOST — file not found in the void.');
     }
     const ext = path.extname(filePath).toLowerCase();
+    // weak ETag from mtime+size — lets the browser revalidate instead of
+    // heuristically caching stale JS/CSS after an edit
+    const etag = `W/"${stat.size}-${Number(stat.mtimeMs).toString(16)}"`;
+    if (req.headers['if-none-match'] === etag) {
+      res.writeHead(304, { ETag: etag, 'Cache-Control': 'no-cache' });
+      return res.end();
+    }
     res.writeHead(200, {
       'Content-Type': MIME[ext] || 'application/octet-stream',
       'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-cache',
+      ETag: etag,
     });
+    if (req.method === 'HEAD') return res.end();
     fs.createReadStream(filePath).pipe(res);
   });
 }
@@ -320,7 +351,7 @@ const server = http.createServer((req, res) => {
 
     // API
     if (pathname.startsWith('/api/')) {
-      const events = loadEvents();
+      const events = allEvents();
       const parts = pathname.split('/').filter(Boolean); // e.g. ['api','events','id']
 
       if (pathname === '/api/events.ics') {
@@ -357,6 +388,9 @@ const server = http.createServer((req, res) => {
         node: 'TECHEVENT.SIGNAL_NODE',
         uptime: process.uptime().toFixed(1) + 's',
         eventsLoaded: events.length,
+        liveEvents: crawler.liveCache.events.length,
+        liveFetchedAt: crawler.liveCache.fetchedAt,
+        liveError: crawler.liveCache.lastError,
         dataFile: path.basename(DATA_FILE),
         updated: new Date().toISOString(),
       });
@@ -386,7 +420,7 @@ const server = http.createServer((req, res) => {
 
   // Frontend + static assets
   if (req.method === 'GET' || req.method === 'HEAD') {
-    return serveStatic(res, pathname);
+    return serveStatic(req, res, pathname);
   }
 
   res.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -395,5 +429,11 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, HOST, () => {
   log(`TECHEVENT signal node online: http://${HOST}:${PORT}`);
-  log(`Events loaded: ${loadEvents().length}`);
+  log(`Events loaded: ${allEvents().length} (manual + live)`);
+
+  // pull live events from real sources now, then refresh on a schedule
+  crawler.fetchEvents().catch((err) => log('[crawler] initial fetch failed:', err.message));
+  setInterval(() => {
+    crawler.fetchEvents().catch((err) => log('[crawler] refresh failed:', err.message));
+  }, crawler.REFRESH_MS);
 });

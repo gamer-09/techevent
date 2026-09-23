@@ -28,11 +28,11 @@ node server.js
 You'll see:
 
 ```
-TECHEVENT signal node online: http://0.0.0.0:3000
+TECHEVENT signal node online: http://0.0.0.0:6001
 Events loaded: 18
 ```
 
-**3. Open http://localhost:3000** in your browser — the site is served right
+**3. Open http://localhost:6001** in your browser — the site is served right
 from the server (frontend + JSON API, one process).
 
 Other ways to run:
@@ -55,8 +55,11 @@ Troubleshooting:
 ```
 techevent/
 ├── server.js            # zero-dependency HTTP server + JSON API
+├── lib/
+│   └── crawler.js       # LIVE FETCHER — pulls events from real sources
 ├── data/
-│   └── events.json      # ← ALL EVENT DATA LIVES HERE. edit this.
+│   ├── events.json      # manual/curated events. edit this.
+│   └── live-events.json # crawler cache (auto-managed, do not edit)
 ├── public/
 │   ├── index.html       # page shell
 │   ├── css/style.css    # futuristic gothic styling (the good stuff)
@@ -64,11 +67,32 @@ techevent/
 └── README.md
 ```
 
+## 🛰 Live event crawler
+
+The server doesn't wait for you to edit JSON — it **fetches real events from
+the source sites** and mixes them into the API automatically:
+
+| Source | Method |
+|---|---|
+| `allevents.in/fredericton/technology` | schema.org JSON-LD `<Event>` blocks |
+| `myignite.ca/events` (Squarespace) | `eventlist-*` markup parse |
+
+- Runs **on boot + every 6 hours**; results cached in `data/live-events.json`
+  so restarts serve instantly even if a source is down.
+- Live events get ids like `ae-…` / `ig-…` and a `live` tag on their cards.
+- **Manual entries always win** — a fetched event with the same id or the
+  same name+month as a `data/events.json` entry is skipped.
+- `/api/health` reports `liveEvents`, `liveFetchedAt` and `liveError`.
+
+Known limits: **mlh.io** and **hackatlantic.ca** (Hack Atlantic) are
+JavaScript-rendered and block bots, so that hackathon can't be auto-fetched —
+add it manually to `data/events.json` if you want it on the board.
+
 ## 📡 API
 
 | Route | What it does |
 |---|---|
-| `GET /api/health` | node status, uptime, event count |
+| `GET /api/health` | node status, uptime, event count, live-crawler status |
 | `GET /api/events` | all events, sorted by date (TBA last) |
 | `GET /api/events?upcoming=1` | only events today or later |
 | `GET /api/events?category=cybersecurity` | filter by category |
@@ -76,8 +100,8 @@ techevent/
 | `GET /api/events?q=hackathon` | search name / tags / venue |
 | `GET /api/events/:id` | single event |
 | `GET /api/meta` | categories, months, counts, sources |
-| `GET /api/events.ics` | **iCalendar feed** — subscribe in Google Calendar, Apple Calendar, Outlook (URL: `http://localhost:3000/api/events.ics`) |
-| `GET /api/events.rss` | **RSS 2.0 feed** for feed readers (`http://localhost:3000/api/events.rss`) |
+| `GET /api/events.ics` | **iCalendar feed** — subscribe in Google Calendar, Apple Calendar, Outlook (URL: `http://localhost:6001/api/events.ics`) |
+| `GET /api/events.rss` | **RSS 2.0 feed** for feed readers (`http://localhost:6001/api/events.rss`) |
 
 Both feeds are generated live from `data/events.json` — every event with a
 date gets a calendar entry (timed events carry `TZID=America/Moncton`;
@@ -137,7 +161,8 @@ transit, and "getting there" notes per venue.
 - unb.ca/cic (Canadian Institute for Cybersecurity)
 
 ⚠️ Event dates move. Always confirm on the organizer's page before travelling —
-this node is a community board, not an oracle.
+this node is a community board, not an oracle. Live-crawled listings especially
+should be double-checked against their source URL (shown on every card).
 
 ## 🎨 Design notes
 
