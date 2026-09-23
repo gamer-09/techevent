@@ -338,15 +338,30 @@ function buildFilters(meta) {
 /* ---------------- ticker ---------------- */
 
 function renderTicker() {
-  const next = state.events
-    .filter((e) => e.date)
-    .sort((a, b) => (a.date < b.date ? -1 : 1))
-    .slice(0, 14);
+  const dated = state.events.filter((e) => e.date);
+  // NEXT = upcoming events, soonest first; fall back to most recent past
+  // only when nothing upcoming exists at all
+  let next = dated.filter((e) => isUpcoming(e)).sort((a, b) => (a.date < b.date ? -1 : 1)).slice(0, 14);
+  const showingPast = next.length === 0;
+  if (showingPast) next = dated.slice().sort((a, b) => (a.date > b.date ? -1 : 1)).slice(0, 14);
+
+  const label = document.querySelector('.ticker-label');
+  if (label) label.textContent = showingPast ? 'RECENT' : 'NEXT';
+
   const inner = next.map((e) => {
     const d = fmtDate(e.date);
     return `<span><span class="t-date">${d.month} ${d.day}</span> <b>${esc(e.name)}</b> <span class="t-cat mono">${esc(e.category)}</span></span>`;
   }).join('');
-  $('#ticker').innerHTML = inner + inner; // seamless loop
+  const el = $('#ticker');
+  el.innerHTML = inner + inner; // seamless loop
+
+  // scale marquee duration to content length so it stays readable
+  // (fixed 40s made long lists fly past); ~55 px/s, 30s minimum.
+  // #ticker IS the .ticker-inner element the marquee animation runs on.
+  if (PREFERS_REDUCED) return;
+  requestAnimationFrame(() => {
+    if (el.scrollWidth > 0) el.style.animationDuration = `${Math.max(el.scrollWidth / 55, 30)}s`;
+  });
 }
 
 /* ---------------- stats + status ---------------- */
